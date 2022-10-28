@@ -1,7 +1,25 @@
 class godModeController:
-    pass
+    
+    def __init__(self):
+        pass
 
 class Agent:
+
+    def __init__(self, balance):
+        self._balance = balance
+
+    def setBalance(self, balance):
+        self._balance = balance
+        return
+    
+    def addBalance(self, balance):
+        self._balance += balance
+        return
+
+    def subtractBalance(self, balance):
+        self._balance -= balance
+        return
+
     def listenForGodMode(self):
         pass
 
@@ -9,6 +27,10 @@ class Agent:
         pass
 
 class coreController:
+
+    def __init__(self):
+        pass
+
     def listenForGodMode(self):
         pass
 
@@ -22,6 +44,10 @@ class coreController:
         pass
 
 class sentimentController:
+
+    def __init__(self):
+        pass
+
     def scraping(self):
         pass
 
@@ -34,5 +60,6 @@ class sentimentController:
 
 
 class Visualiser:
-    pass
 
+    def __init__(self):
+        pass
