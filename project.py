@@ -14,8 +14,20 @@ class godModeController:
 
 
 class Agent:
-    def __init__(self):
-        pass
+    def __init__(self, balance):
+        self._balance = balance
+
+    def setBalance(self, balance):
+        self._balance = balance
+        return
+
+    def addBalance(self, balance):
+        self._balance += balance
+        return
+
+    def subtractBalance(self, balance):
+        self._balance -= balance
+        return
 
     def listenForGodMode(self):
         pass
