@@ -1,39 +1,15 @@
-import snscrape.modules.twitter as sntwitter
-import pandas as pd
-import sqlalchemy as db
+import pygame as pg
 
-try:
-  engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
-  print("Connection successful")
-except Exception as e:
-  print(e)
-
-
-class godModeController:
-    def __init__(self):
-        pass
-
-    def visualiserInputListener(self):
-        pass
-
-    def action(self):
-        pass
-
-
-class Agent:
-    def __init__(self, balance):
+class Bot:
+    def __init__(self, identifier, balance):
+        self.identifier = identifier
         self._balance = balance
+        self.xpos = 0
+        self.ypos = 0
+        self.botId = 0
 
     def setBalance(self, balance):
         self._balance = balance
-        return
-
-    def addBalance(self, balance):
-        self._balance += balance
-        return
-
-    def subtractBalance(self, balance):
-        self._balance -= balance
         return
 
     def listenForGodMode(self):
@@ -55,69 +31,46 @@ class Agent:
 
 class coreController:
     def __init__(self):
-        pass
-
+        self.bots = []
+    
     def listenForGodMode(self):
         pass
 
     def visualise(self):
         pass
 
-    def createBot(self):
-        pass
+    def createBot(self, startingBalance: int):
+        self.botId += 1
+        bot = Bot(self.botId, startingBalance)
+        self.bots.append(bot)
 
-    def deleteBot(self):
-        pass
-
-
-class sentimentController:
-    def __init__(self):
-        pass
-
-    # Handles data processing and databse Transfer
-    def scraping(self):
-        query = "#crypto"
-        tweets = []
-        limit = 200 # was 500,000
-        count = 0
-
-        for tweet in sntwitter.TwitterSearchScraper(query).get_items():
-            if len(tweets) == limit:
-                print("Done!")
+    def deleteBot(self, bot):
+        for selectedBot in self.bots:
+            if selectedBot.identifier == bot.identifier:
+                self.bots.remove(bot)
                 break
             else:
-                count += 1
-                print(count)
-                tweets.append([tweet.date, tweet.content])
+                continue
 
-        df = pd.DataFrame(tweets, columns=["Date", "Tweet"])
-        #print("Dataframe transfer complete!")
-        #df.to_sql("Tweets", engine, if_exists="replace", index=False)
-
-    def requestListener(self):
-        #API request --> API response
-        #Sentiment request --> Sentiment response
+class godModeController:
+    def __init__(self):
         pass
-
-    def databaseTransfer(self):
-        pass
-
 
 class Visualiser:
     def __init__(self):
-        pass
+        self.mainDisplay = None
 
-    def listener(self):
-        pass
+    def initialise(self):
+        screen = (800, 600)
+        pg.init()
+        pg.display.set_caption('Crypto Bot Colony')
+        self.mainDisplay = pg.display.set_mode(screen)
+        displayer = pg.Surface(screen)
+    
+    def drawBot(self, bot):
+       self.mainDisplay.set_at((bot.xpos, bot.ypos), (255,255,255))
+    
+    def eraseBot(self, bot):
+        self.mainDisplay.set_at((bot.xpos, bot.ypos), (0, 0, 0))
 
-    def godeModeAction():
-        pass
 
-    def coreControllerFeedbackReceiver():
-        pass
-
-    def visualise(self):
-        pass
-
-sentiment = sentimentController()
-sentiment.scraping()
