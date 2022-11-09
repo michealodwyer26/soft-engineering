@@ -73,4 +73,3 @@ class Visualiser:
     def eraseBot(self, bot):
         self.mainDisplay.set_at((bot.xpos, bot.ypos), (0, 0, 0))
 
-

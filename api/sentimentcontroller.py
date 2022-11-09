@@ -1,10 +1,11 @@
 # Dependencies
 # 
-# pandas, sqlalchemy, snscrape, vaderSentiment
+# pandas, sqlalchemy, snscrape, vaderSentiment, json
 
 import pandas as pd
 import sqlalchemy as db
 import snscrape.modules.twitter as sntwitter
+import json
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import re, string, datetime
@@ -47,9 +48,10 @@ class sentimentController:
         # Sentiment request --> Sentiment response
     
     def analyzeCurrency(self, currency):
+        # Returns current sentiment of a coin.
+
         self.connectToDatabase()
         tweets = self.scraping("#" + currency, 100)
-        
         
         final_sentiment = 0
 
@@ -59,12 +61,30 @@ class sentimentController:
 
         return final_sentiment
 
-coins = ["BTC", "ETH", "UDST", "BNB", "USDC", "XRP", "BUSD", "DOGE", "ADA", "SOL", "MATIC", "DOT",
-        "STETH", "SHIB", "SHIB", "DAI", "TRX", "OKB", "AVAX", "UNI", "WBTC", "LTC", "ATOM", "LINK",
-        "LEO", "ETC", "ALGO", "CRO", "FTT", "XMR", "XLM", "NEAR", "TON", "BHC", "QNT", "VET", "FIL", 
-        "FLOW", "LUNC", "CHZ", "HBAR", "APE", "ICP", "EGLD", "SAND", "AAVE", "XTZ", "FRAX", "MANA", 
-        "LDO", "THETA"]
+    def coinAnalysis2Json(coins):
+        # Adds a new entry of Sentiment analysis to the JSON file coins.json.
 
-print("Sentiment analysis of currencies for " + str(datetime.datetime.now()))
-for coin in coins:
-    print( "{}: {}".format(coin, sentimentController().analyzeCurrency(coin)))
+        timeOfEvaluation = "Sentiment analysis of currencies for " + str(datetime.datetime.now())
+        newFileData = {timeOfEvaluation: {}}
+
+        for coin in coins:
+            coinData = {coin: sentimentController().analyzeCurrency(coin)}
+            newFileData[timeOfEvaluation].update(coinData)
+
+        with open("coins.json", "r", encoding='utf-8') as file:
+
+            fileData = json.load(file)  
+        
+        file.close()
+
+        fileData.update(newFileData)
+            
+        with open("coins.json", "w", encoding='utf-8') as file:
+
+            json.dump(fileData, file, ensure_ascii=False, indent=4)
+
+        file.close()
+
+
+
+
