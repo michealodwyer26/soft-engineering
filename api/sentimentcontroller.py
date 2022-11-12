@@ -6,7 +6,7 @@ from customlogger import Logger
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
-class sentimentController:
+class SentimentController:
 
     def __init__(self):
         self.engine = None

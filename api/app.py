@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, send_file
 import mysql.connector as db
-from sentimentcontroller import sentimentController
+from sentimentcontroller import SentimentController
 import datetime
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ def returnJson():
              "FLOW", "LUNC", "CHZ", "HBAR", "APE", "ICP", "EGLD", "SAND", "AAVE", "XTZ", "FRAX", "MANA",
              "LDO", "THETA"]
 
-    sentimentController.coinAnalysis2Json(coins)
+    SentimentController.coinAnalysis2Json(coins)
     
     return send_file("../coins.json", as_attachment=True)
 
