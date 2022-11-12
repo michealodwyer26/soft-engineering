@@ -67,7 +67,7 @@ class SentimentController:
         newFileData = {timeOfEvaluation: {}}
 
         for coin in coins:
-            coinData = {coin: sentimentController().analyzeCurrency(coin)}
+            coinData = {coin: SentimentController().analyzeCurrency(coin)}
             newFileData[timeOfEvaluation].update(coinData)
 
         with open("coins.json", "r", encoding='utf-8') as file:
