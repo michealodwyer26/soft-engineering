@@ -21,7 +21,7 @@ def returnJson():
 
     SentimentController.coinAnalysis2Json(coins)
     
-    return send_file("../coins.json", as_attachment=True)
+    return send_file("coins.json", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
