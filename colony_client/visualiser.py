@@ -1,5 +1,5 @@
-from bot import Bot
-from core_controller import CoreController
+from .bot import Bot
+from .core_controller import CoreController
 
 class Visualiser:
     def __init__(self):
