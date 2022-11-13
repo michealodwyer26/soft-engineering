@@ -1,10 +1,13 @@
-import pandas as pd
+import re
+import json
+import string
+import datetime
 import sqlalchemy as db
-import re, json, string, datetime
 import snscrape.modules.twitter as sntwitter
-from customlogger import Logger
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from custom_logger import Logger
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from colony_client import bot, core_controller, god_mode_controller, visualiser
 
 class SentimentController:
 
@@ -70,11 +73,11 @@ class SentimentController:
             coinData = {coin: SentimentController().analyzeCurrency(coin)}
             newFileData[timeOfEvaluation].update(coinData)
 
-        with open("coins.json", "r", encoding='utf-8') as file:
+        with open("../coins.json", "r", encoding='utf-8') as file:
             fileData = json.load(file)
 
         fileData.update(newFileData)
 
-        with open("coins.json", "w", encoding='utf-8') as file:
+        with open("../coins.json", "w", encoding='utf-8') as file:
             self.logger.debugLog(self.logTitle, "Transferred analysis to JSON")
             json.dump(fileData, file, ensure_ascii=False, indent=4)

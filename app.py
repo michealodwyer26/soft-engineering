@@ -1,7 +1,5 @@
-from flask import Flask, jsonify, send_file
-import mysql.connector as db
-from sentimentcontroller import SentimentController
-import datetime
+from flask import Flask, send_file
+from sentiment_controller.sentiment_controller import SentimentController
 
 app = Flask(__name__)
 
