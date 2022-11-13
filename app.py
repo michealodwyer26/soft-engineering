@@ -64,7 +64,7 @@ def returnJson():
                 "coin": "THETA"
     }
     coinsArray = list(coins.values())
-    SentimentController.coinAnalysis2Json(coinsArray)
+    #SentimentController.coinAnalysisToJson(coinsArray)
 
     return coins
 
