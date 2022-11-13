@@ -17,3 +17,9 @@ self.logger = Logger()
 self.logger.debugLog(self.logTitle, 'Example Debug')
 self.logger.errorLog(self.logTitle, 'Example Error')
 ```
+
+## colony_client
+`colony_client` contains all of the code that runs on the user's computer when they need to initialise a colony.`
+
+## sentiment_controller
+`sentiment_controller` runs on the server and interacts with `app.py`.
