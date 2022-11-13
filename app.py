@@ -1,25 +1,72 @@
 from flask import Flask, send_file
-from sentiment_controller.sentiment_controller import SentimentController
+from sentiment_controller import SentimentController
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/api/v1/", methods=["GET"])
 def index():
-    return '<a href="coinsJSON"> JSON of coin analysis <a/>'
+    return ''
 
-@app.route("/coinsJSON", methods=["GET", "POST"])
+@app.route("/api/v1/coins", methods=["GET"])
 def returnJson():
     # Sends JSON file of Coin Sentiment Analysis
-    
-    coins = ["BTC", "ETH", "UDST", "BNB", "USDC", "XRP", "BUSD", "DOGE", "ADA", "SOL", "MATIC", "DOT",
-             "STETH", "SHIB", "SHIB", "DAI", "TRX", "OKB", "AVAX", "UNI", "WBTC", "LTC", "ATOM", "LINK",
-             "LEO", "ETC", "ALGO", "CRO", "FTT", "XMR", "XLM", "NEAR", "TON", "BHC", "QNT", "VET", "FIL",
-             "FLOW", "LUNC", "CHZ", "HBAR", "APE", "ICP", "EGLD", "SAND", "AAVE", "XTZ", "FRAX", "MANA",
-             "LDO", "THETA"]
+    coins = {
+                "coin": "BTC",
+                "coin": "ETH",
+                "coin": "UDST",
+                "coin": "BNB",
+                "coin": "USDC",
+                "coin": "XRP",
+                "coin": "BUSD",
+                "coin": "DOGE",
+                "coin": "ADA",
+                "coin": "SOL",
+                "coin": "MATIC",
+                "coin": "DOT",
+                "coin": "STETH",
+                "coin": "SHIB",
+                "coin": "SHIB",
+                "coin": "DAI",
+                "coin": "TRX",
+                "coin": "OKB",
+                "coin": "AVAX",
+                "coin": "UNI",
+                "coin": "WBTC",
+                "coin": "LTC",
+                "coin": "ATOM",
+                "coin": "LINK",
+                "coin": "LEO",
+                "coin": "ETC",
+                "coin": "ALGO",
+                "coin": "CRO",
+                "coin": "FTT",
+                "coin": "XMR",
+                "coin": "XLM",
+                "coin": "NEAR",
+                "coin": "TON",
+                "coin": "BHC",
+                "coin": "QNT",
+                "coin": "VET",
+                "coin": "FIL",
+                "coin": "FLOW",
+                "coin": "LUNC",
+                "coin": "CHZ",
+                "coin": "HBAR",
+                "coin": "APE",
+                "coin": "ICP",
+                "coin": "EGLD",
+                "coin": "SAND",
+                "coin": "AAVE",
+                "coin": "XTZ",
+                "coin": "FRAX",
+                "coin": "MANA",
+                "coin": "LDO",
+                "coin": "THETA"
+    }
+    coinsArray = list(coins.values())
+    SentimentController.coinAnalysis2Json(coinsArray)
 
-    SentimentController.coinAnalysis2Json(coins)
-    
-    return send_file("coins.json", as_attachment=True)
+    return coins
 
 if __name__ == '__main__':
     app.run(debug=True)
