@@ -1,6 +1,7 @@
 from .bot import Bot
 from custom_logger import Logger
 
+
 class CoreController:
     def __init__(self):
         self.bots = []
@@ -18,7 +19,7 @@ class CoreController:
         loggingMessage = "Created Bot %s" % self.currentBotId
         self.logger.debugLog("core", loggingMessage)
 
-    def deleteBot(self, bot):
+    def deleteBot(self, bot: Bot):
         for selectedBot in self.bots:
             if selectedBot.identifier == bot.identifier:
                 self.bots.remove(bot)
