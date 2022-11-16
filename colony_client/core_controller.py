@@ -10,8 +10,8 @@ class CoreController:
         self.currentBotId = 0
         self.logTitle = "core"
         self.logger = Logger()
-
         self.notifySentimentController()
+
 
     def listenForGodMode(self):
         pass
@@ -20,7 +20,7 @@ class CoreController:
         dataJSON = '{"name":"%s"}' % self.identifier
         try:
             requests.post(
-                "http://http://65.108.214.180/api/v1/colony/create",
+                "http://65.108.214.180/api/v1/colony/create",
                 data=dataJSON,
                 headers={"Content-Type": "application/json"}
             )
