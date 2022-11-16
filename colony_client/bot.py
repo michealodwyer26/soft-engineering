@@ -11,6 +11,7 @@ class Bot:
 
     def getBalance(self):
         return self._balance
+        
     def setBalance(self, balance):
         self._balance = balance
         return

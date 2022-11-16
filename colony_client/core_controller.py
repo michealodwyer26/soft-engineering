@@ -1,4 +1,4 @@
-from .bot import Bot
+from colony_client.bot import Bot
 from custom_logger import Logger
 
 
@@ -28,3 +28,4 @@ class CoreController:
                 break
             else:
                 continue
+

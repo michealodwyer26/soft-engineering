@@ -4,6 +4,7 @@ import string
 import datetime
 import sqlalchemy as db
 import snscrape.modules.twitter as sntwitter
+from datetime import datetime
 
 from custom_logger import Logger
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -22,7 +23,6 @@ class SentimentController:
             self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
-            
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
@@ -64,6 +64,31 @@ class SentimentController:
         self.logger.debugLog(self.logTitle, logMessage)
         return finalSentiment
 
+    def updateSentimentAnalysis(self, coin):
+        self.connectToDatabase()
+        cur = self.engine.connect()
+        metadata = db.MetaData()
+        coinAnalysis = db.Table("coins_current", metadata, autoload=True, autoload_with=self.engine)
+        coinHistory = db.Table("coins_history", metadata, autoload=True, autoload_with=self.engine)
+
+        analysis = self.analyzeCurrency(coin)
+
+        if self.engine.select([coinAnalysis]).where(coinAnalysis.columns.coin == coin):
+            query = coinAnalysis.update().where(coinAnalysis.columns.coin == coin).values(sentiment=analysis)
+            cur.execute(query)
+
+            query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
+            cur.execute(query)
+        else:
+            query = coinAnalysis.insert().values(coin=coin, sentiment=analysis)
+            cur.execute(query)
+
+            query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
+            cur.execute(query)
+
+        self.engine.commit()
+        cur.close()
+
     # Adds a new entry of Sentiment analysis to the JSON file coins.json.
     def coinAnalysisToJson(self, coins):
         timeOfEvaluation = "Sentiment analysis of currencies for %s" % datetime.datetime.now()
@@ -81,3 +106,4 @@ class SentimentController:
         with open("../coins.json", "w", encoding='utf-8') as file:
             self.logger.debugLog(self.logTitle, "Transferred analysis to JSON")
             json.dump(fileData, file, ensure_ascii=False, indent=4)
+
