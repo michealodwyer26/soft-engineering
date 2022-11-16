@@ -1,10 +1,11 @@
-from .bot import Bot
+from colony_client.bot import Bot
 from custom_logger import Logger
 
 
 class CoreController:
-    def __init__(self):
+    def __init__(self, name):
         self.bots = []
+        self.identifier = name
         self.currentBotId = 0
         self.logTitle = "core"
         self.logger = Logger()
@@ -18,6 +19,7 @@ class CoreController:
         self.bots.append(bot)
         loggingMessage = "Created Bot %s" % self.currentBotId
         self.logger.debugLog("core", loggingMessage)
+        return
 
     def deleteBot(self, bot: Bot):
         for selectedBot in self.bots:

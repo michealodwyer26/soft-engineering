@@ -16,6 +16,7 @@ class SentimentController:
         self.logger = Logger()
         self.logTitle = "sentiment"
         self.sia = SentimentIntensityAnalyzer()
+        self.colonies = []
     
     def connectToDatabase(self):
         try:
@@ -23,6 +24,12 @@ class SentimentController:
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
             
+    def createColony(self, colony: str):
+        if re.match("^[A-Za-z0-9]*$", colony):
+            self.colonies.append(colony)
+            return "success"
+        else:
+            return "failure"
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
