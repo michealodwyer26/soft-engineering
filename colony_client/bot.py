@@ -9,6 +9,8 @@ class Bot:
         self.logger = Logger()
         self.logTitle = "bot"
 
+    def getBalance(self):
+        return self._balance
     def setBalance(self, balance):
         self._balance = balance
         return
