@@ -1,3 +1,4 @@
+import requests
 from colony_client.bot import Bot
 from custom_logger import Logger
 
@@ -10,9 +11,21 @@ class CoreController:
         self.logTitle = "core"
         self.logger = Logger()
 
+        self.notifySentimentController()
+
     def listenForGodMode(self):
         pass
 
+    def notifySentimentController(self):
+        dataJSON = '{"name":"%s"}' % self.identifier
+        try:
+            requests.post(
+                "http://http://65.108.214.180/api/v1/colony/create",
+                data=dataJSON,
+                headers={"Content-Type": "application/json"}
+            )
+        except Exception as e:
+            print(e)
     def createBot(self, startingBalance: int):
         self.currentBotId += 1
         bot = Bot(self.currentBotId, startingBalance)
