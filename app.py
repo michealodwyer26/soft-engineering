@@ -33,13 +33,17 @@ def createColony():
     requestJSON = request.get_json()
     colonyName = requestJSON["name"]
     try:
-        mainController.createColony(colonyName)
-        logMessage = 'Created colony: %s' % colonyName
-        flaskLogger.debugLog(flaskLogTitle, logMessage)
-        return "Success"
-    except Exception as e:
-        flaskLogger.errorLog(flaskLogTitle, str(e))
-        return "Request unsuccessful"
+        response = mainController.createColony(colonyName)
+        if response == "success":
+            logMessage = 'Created colony: %s' % colonyName
+            flaskLogger.debugLog(flaskLogTitle, logMessage)
+            return "Success"
+        else:
+            logMessage = 'Colony failed: %s' % colonyName
+            flaskLogger.errorLog(flaskLogTitle, logMessage)
+            return "Invalid colony name"
+    except:
+        return "Internal Server Error"
 
 
 if __name__ == '__main__':
