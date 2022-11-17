@@ -66,28 +66,27 @@ class SentimentController:
 
     def updateSentimentAnalysis(self, coin):
         self.connectToDatabase()
-        cur = self.engine.connect()
-        metadata = db.MetaData()
-        coinAnalysis = db.Table("coins_current", metadata, autoload=True, autoload_with=self.engine)
-        coinHistory = db.Table("coins_history", metadata, autoload=True, autoload_with=self.engine)
+        metadata = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metadata)
+        
+        coinAnalysis = metadata.tables["coins_current"]
+        coinHistory = metadata.tables["coins_history"]
 
         analysis = self.analyzeCurrency(coin)
 
         if self.engine.select([coinAnalysis]).where(coinAnalysis.columns.coin == coin):
             query = coinAnalysis.update().where(coinAnalysis.columns.coin == coin).values(sentiment=analysis)
-            cur.execute(query)
+            self.engine.execute(query)
 
-            query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
-            cur.execute(query)
         else:
             query = coinAnalysis.insert().values(coin=coin, sentiment=analysis)
-            cur.execute(query)
+            self.engine.execute(query)
 
-            query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
-            cur.execute(query)
+        query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
+        self.engine.execute(query)
 
         self.engine.commit()
-        cur.close()
+        self.engine.close()
 
     # Adds a new entry of Sentiment analysis to the JSON file coins.json.
     def coinAnalysisToJson(self, coins):
