@@ -25,9 +25,8 @@ class Bot:
         
         coinAnalysis = metaData.tables["coins_current"]
 
-        query = self.engine.select([coinAnalysis]).where(coinAnalysis.columns.coin == self.coin)
-        row = self.engine.execute(query).fetchall()
-        sentimentOfCoin = row[1]
+        query = self.engine.select([coinAnalysis.columns.sentiment]).where(coinAnalysis.columns.coin == self.coin)
+        sentimentOfCoin = self.engine.execute(query).fetchall()
 
         self.engine.close()
 
