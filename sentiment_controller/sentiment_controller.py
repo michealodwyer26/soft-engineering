@@ -66,21 +66,20 @@ class SentimentController:
 
     def updateSentimentAnalysis(self, coin):
         self.connectToDatabase()
-        metadata = db.MetaData(bind=self.engine)
-        db.MetaData.reflect(metadata)
+        metaData = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metaData)
         
-        coinAnalysis = metadata.tables["coins_current"]
-        coinHistory = metadata.tables["coins_history"]
+        coinAnalysis = metaData.tables["coins_current"]
+        coinHistory = metaData.tables["coins_history"]
 
         analysis = self.analyzeCurrency(coin)
 
-        if self.engine.select([coinAnalysis]).where(coinAnalysis.columns.coin == coin):
+        if self.engine.execute(coinAnalysis.select().where(coinAnalysis.columns.coin == coin)).scalar() != None:
             query = coinAnalysis.update().where(coinAnalysis.columns.coin == coin).values(sentiment=analysis)
-            self.engine.execute(query)
-
         else:
             query = coinAnalysis.insert().values(coin=coin, sentiment=analysis)
-            self.engine.execute(query)
+        
+        self.engine.execute(query)
 
         query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
         self.engine.execute(query)

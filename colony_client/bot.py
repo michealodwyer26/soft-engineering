@@ -1,13 +1,37 @@
 from custom_logger import Logger
+import sqlalchemy as db
 
 class Bot:
-    def __init__(self, identifier, balance):
+    def __init__(self, identifier, balance, coin):
         self.identifier = identifier
         self._balance = balance
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
         self.logTitle = "bot"
+        self.coin = coin
+        self.engine = None
+
+    def connectToDatabase(self):
+        try:
+            self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
+        except Exception as e:
+            self.logger.errorLog(self.logTitle, str(e))
+
+    def getCoinSentiment(self):
+        self.connectToDatabase()
+        metaData = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metaData)
+        
+        coinAnalysis = metaData.tables["coins_current"]
+
+        query = self.engine.select([coinAnalysis]).where(coinAnalysis.columns.coin == self.coin)
+        row = self.engine.execute(query).fetchall()
+        sentimentOfCoin = row[1]
+
+        self.engine.close()
+
+        return sentimentOfCoin
 
     def getBalance(self):
         return self._balance

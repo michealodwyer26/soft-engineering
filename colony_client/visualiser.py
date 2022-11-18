@@ -1,5 +1,6 @@
 from .bot import Bot
 from .core_controller import CoreController
+import pygame as pg
 
 class Visualiser:
     def __init__(self):
