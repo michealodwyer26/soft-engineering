@@ -1,4 +1,4 @@
-from flask import Flask, send_file
+from flask import Flask, request
 from sentiment_controller import SentimentController
 
 app = Flask(__name__)
@@ -7,9 +7,10 @@ app = Flask(__name__)
 def index():
     return ''
 
-@app.route("/api/v1/updateCoin/<coin>", methods=["GET"])
+@app.route("/api/v1/updateCoin", methods=["POST"])
 def updateCoin(coin):
-    print(coin)
+    requestJSON = request.get_json()
+    coin = requestJSON["name"]
 
     SentimentController().updateSentimentAnalysis(coin)
 

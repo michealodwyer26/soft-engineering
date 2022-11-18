@@ -1,5 +1,6 @@
 from custom_logger import Logger
 import sqlalchemy as db
+import requests
 
 class Bot:
     def __init__(self, identifier, balance, coin):
@@ -19,6 +20,14 @@ class Bot:
             self.logger.errorLog(self.logTitle, str(e))
 
     def getCoinSentiment(self):
+        dataJSON = '{"name":"%s"}' % self.coin
+        
+        requests.post(
+            "http://65.108.214.180/api/v1/updateCoin",
+            data=dataJSON,
+            headers={"Content-Type": "application/json"}
+        )
+
         self.connectToDatabase()
         metaData = db.MetaData(bind=self.engine)
         db.MetaData.reflect(metaData)
