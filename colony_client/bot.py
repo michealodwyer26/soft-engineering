@@ -19,7 +19,7 @@ class Bot:
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
 
-    def getCoinSentiment(self):
+    def updateCoinRequest(self):
         dataJSON = '{"name":"%s"}' % self.coin
         
         requests.post(
@@ -27,6 +27,9 @@ class Bot:
             data=dataJSON,
             headers={"Content-Type": "application/json"}
         )
+
+    def getCoinSentiment(self):
+        self.updateCoinRequest()
 
         self.connectToDatabase()
         metaData = db.MetaData(bind=self.engine)
