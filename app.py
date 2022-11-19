@@ -60,8 +60,8 @@ def createBot():
             logMessage = 'Bot failed: %s for colony %s' % botId, colonyName
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             return "Bot creation error"
-    except:
-        return "Internal server error"
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/api/v1/colony/<colony>')
