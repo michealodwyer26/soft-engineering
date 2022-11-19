@@ -9,6 +9,7 @@ from custom_logger import Logger
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from colony_client import bot, core_controller, god_mode_controller, visualiser
 
+
 class SentimentController:
 
     def __init__(self):
@@ -16,20 +17,26 @@ class SentimentController:
         self.logger = Logger()
         self.logTitle = "sentiment"
         self.sia = SentimentIntensityAnalyzer()
-        self.colonies = []
-    
+        self.colonies = {}
+
     def connectToDatabase(self):
         try:
             self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
-            
+
     def createColony(self, colony: str):
         if re.match("^[A-Za-z0-9]*$", colony):
-            self.colonies.append(colony)
-            return "success"
+            if colony not in self.colonies:
+                self.colonies[colony] = {}
+                return "success"
+            else:
+                return "failure"
         else:
             return "failure"
+
+    def getColony(self, colony: str):
+        return self.colonies[colony]
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
@@ -50,20 +57,20 @@ class SentimentController:
         pass
         # API request --> API response
         # Sentiment request --> Sentiment response
-    
+
     # Returns current sentiment of a coin.
     def analyzeCurrency(self, currency):
         finalSentiment = 0
         tweets = self.scraping("#" + currency, 100)
         self.connectToDatabase()
 
-        for tweet in tweets:       
-            try:  
+        for tweet in tweets:
+            try:
                 tweetSentiment = float(
                     str(self.sia.polarity_scores(tweet))
                     .strip("}")
                     .split()[-1]
-                    )
+                )
                 finalSentiment += tweetSentiment
             except Exception as e:
                 self.logger.errorLog(self.logTitle, str(e))
