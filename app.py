@@ -47,9 +47,8 @@ def createColony():
 
 @app.route('/api/v1/colony/<colony>', methods=['GET'])
 def getColony(colony):
-    colonyName = colony
     try:
-        result = mainController.getColony(colonyName)
+        result = mainController.getColony(colony)
     except:
         return "An error has occurred"
     if result == None:

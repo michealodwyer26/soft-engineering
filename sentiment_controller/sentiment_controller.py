@@ -36,7 +36,10 @@ class SentimentController:
             return "failure"
 
     def getColony(self, colony: str):
-        return self.colonies[colony]
+        if colony in self.colonies.keys():
+            return self.colonies[colony]
+        else:
+            return None
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
