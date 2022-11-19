@@ -10,6 +10,7 @@ class Bot:
         self.identifier = identifier
         self._coinBalance = coinBalance
         self._balance = balance
+        self._initialBalance = balance
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
@@ -22,6 +23,19 @@ class Bot:
             self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
+
+    def feedback(self):
+        earnings = self._balance - self._initialBalance
+        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(self.identifier, self.coin, self._balance, self._coinBalance, self.xpos, self.ypos)
+        
+        '''
+        END POINT NOT DECIDED
+        '''
+        requests.post(
+            "http://65.108.214.180/api/v1/TBD",
+            data=dataJSON,
+            headers={"Content-Type": "application/json"}
+        )
 
     def updateCoinRequest(self):
         dataJSON = '{"name":"%s"}' % self.coin
@@ -129,10 +143,6 @@ class Bot:
         pass
 
     def listenForResponse(self):
-        pass
-
-    # Taking Earnings & Sending Feedback
-    def feedback(self):
         pass
 
     def die(self):
