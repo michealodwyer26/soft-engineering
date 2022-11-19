@@ -45,6 +45,25 @@ def createColony():
     except:
         return "Internal Server Error"
 
+@app.route('/api/v1/bot/create', methods=['POST'])
+def createBot():
+    requestJSON = request.get_json()
+    colonyName = requestJSON["colony"]
+    botId = requestJSON["id"]
+    try:
+        response = mainController.createBot(colonyName, botId)
+        if response == "success":
+            logMessage = 'Created bot: %s' % colonyName
+            flaskLogger.debugLog(flaskLogTitle, logMessage)
+            return "Success"
+        else:
+            logMessage = 'Bot failed: %s for colony %s' % botId, colonyName
+            flaskLogger.errorLog(flaskLogTitle, logMessage)
+            return "Bot creation error"
+    except:
+        return "Internal server error"
+
+
 @app.route('/api/v1/colony/<colony>')
 def getColony(colony: str):
     try:
