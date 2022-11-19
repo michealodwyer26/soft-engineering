@@ -6,8 +6,9 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
 class Bot:
-    def __init__(self, identifier, balance, coin):
+    def __init__(self, identifier, coinBalance, balance, coin):
         self.identifier = identifier
+        self._coinBalance = coinBalance
         self._balance = balance
         self.xpos = 0
         self.ypos = 0
@@ -47,11 +48,11 @@ class Bot:
 
         return sentimentOfCoin
 
-    def getCoinPriceEur(self):
+    def getCoinPriceEur(self, amount):
         url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
         parameters = {
-        'symbol':'{}'.format(self.coin),
-        'amount':'{}'.format(self.getBalance()),
+        'symbol':'{}'.format(amount),
+        'amount':'{}'.format(self.getCoinBalance()),
         'convert':'EUR'
         }
         headers = {
@@ -71,8 +72,54 @@ class Bot:
         
         return data["data"][0]["quote"]["EUR"]["price"]
 
+    def investInCoin(self):
+        sentiment = self.investingState()
+
+        match sentiment:
+            case "Excellent":
+                amount = self._balance / 0.90
+            case "Great":
+                amount = self._balance / 0.75
+            case "Good":
+                amount = self._balance / 0.5
+            case "Ok":
+                amount = 0
+            case "Bad":
+                self.sellCoin()
+
+        price = self.getCoinPriceEur(1)
+
+        if amount / price > 1:
+            change = amount * price - (amount % price)*price
+            coinAmount = amount % price
+            self._coinBalance += coinAmount
+            self._balance -= amount + change
+
+    def investingState(self):
+        sentiment = self.getCoinSentiment()
+
+        match sentiment:
+            case sentiment if sentiment < 0:
+                return "Bad"
+            case sentiment if sentiment > 0:
+                return "Ok"
+            case sentiment if sentiment > 5:
+                return "Good"
+            case sentiment if sentiment > 10:
+                return "Great"
+            case sentiment if sentiment > 20:
+                return "Excellent"
+
+    def sellCoin(self):
+        if self._coinBalance != 0:
+            self._balance += self.getCoinPriceEur(self._coinBalance)
+            self._coinBalance = 0
+
     def getBalance(self):
         return self._balance
+
+    def getCoinBalance(self):
+        return self._coinBalance
         
     def setBalance(self, balance):
         self._balance = balance
@@ -82,9 +129,6 @@ class Bot:
         pass
 
     def listenForResponse(self):
-        pass
-
-    def investingState(self):
         pass
 
     # Taking Earnings & Sending Feedback
