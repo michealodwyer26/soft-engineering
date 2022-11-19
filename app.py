@@ -45,8 +45,8 @@ def createColony():
     except:
         return "Internal Server Error"
 
-@app.route('/api/v1/colony/<colony>', methods=['GET'])
-def getColony(colony):
+@app.route('/api/v1/colony/<colony>')
+def getColony(colony: str):
     try:
         result = mainController.getColony(colony)
     except:
