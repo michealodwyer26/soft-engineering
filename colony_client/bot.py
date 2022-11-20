@@ -104,8 +104,8 @@ class Bot:
         price = self.getCoinPriceEur(1)
 
         if amount / price > 1:
-            change = amount * price - (amount % price)*price
-            coinAmount = amount % price
+            change = (amount / price) - (amount // price)
+            coinAmount = amount // price
             self._coinBalance += coinAmount
             self._balance -= amount + change
 
