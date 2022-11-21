@@ -46,7 +46,8 @@ def createColony():
             return returnMessage
     except Exception as e:
         print(e)
-        return str(response)
+        exceptionMessage = "Unhandled error: %s" % str(e)
+        return exceptionMessage
 
 
 @app.route('/api/v1/bot/create', methods=['POST'])
