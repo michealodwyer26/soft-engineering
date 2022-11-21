@@ -46,7 +46,8 @@ class SentimentController:
             return "failure"
 
     def getColony(self, colony: str):
-        if colony in self.colonies.keys():
+        if colony in self.colonies:
+            self.logger.debugLog(self.logTitle, colony)
             return self.colonies[colony]
         else:
             return None

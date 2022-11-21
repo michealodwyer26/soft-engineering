@@ -45,6 +45,7 @@ def createColony():
     except:
         return "Internal Server Error"
 
+
 @app.route('/api/v1/bot/create', methods=['POST'])
 def createBot():
     requestJSON = request.get_json()
@@ -74,6 +75,7 @@ def getColony(colony: str):
         return "Colony not found"
     else:
         return result
+
 
 if __name__ == '__main__':
     app.run(debug=True)
