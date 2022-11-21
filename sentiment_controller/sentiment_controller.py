@@ -28,7 +28,7 @@ class SentimentController:
     def createColony(self, colony: str):
         if re.match("^[A-Za-z0-9]*$", colony):
             if colony not in self.colonies:
-                self.colonies[colony] = {"bots": {}}
+                self.colonies[colony]["bots"] = {}
                 return "success"
             else:
                 return "failure"
@@ -39,7 +39,7 @@ class SentimentController:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if bot not in self.colonies[colony]:
-                    self.colonies[colony].update({str(botId): "example bot value for bot %s" % str(botId)})
+                    self.colonies[colony]["bots"].update({str(botId): str(bot.getBalance())})
                     return "success"
                 else:
                     return "failure"
