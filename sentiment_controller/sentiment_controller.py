@@ -51,7 +51,7 @@ class SentimentController:
     def getColony(self, colony: str) -> dict:
         if colony in self.colonies:
             self.logger.debugLog(self.logTitle, "Tried to return colony %s" % colony)
-            return {"bots": {"1": 1.2}}
+            return dict(self.colonies[colony])
         else:
             return {"Error": "Colony not found!"}
 
