@@ -25,17 +25,17 @@ class SentimentController:
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
 
-    def createColony(self, colony: str):
+    def createColony(self, colony: str) -> str:
         if re.match("^[A-Za-z0-9]*$", colony):
             if colony not in self.colonies:
-                self.colonies[colony].update({"bots": {}})
+                self.colonies[colony] = {"bots": {}}
                 return "success"
             else:
                 return "failure"
         else:
             return "failure"
 
-    def createBot(self, colony: str, botId: str):
+    def createBot(self, colony: str, botId: str) -> str:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if bot not in self.colonies[colony]:

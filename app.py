@@ -31,7 +31,7 @@ def returnJson():
 @app.route('/api/v1/colony/create', methods=['POST'])
 def createColony():
     requestJSON = request.get_json()
-    colonyName = requestJSON["name"]
+    colonyName = str(requestJSON["name"])
     try:
         response = mainController.createColony(colonyName)
         if response == "success":
