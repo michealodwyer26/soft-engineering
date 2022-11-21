@@ -65,16 +65,14 @@ def createBot():
         return str(e)
 
 
-@app.route('/api/v1/colony/<colony>')
+@app.route('/api/v1/colony/<str: colony>')
 def getColony(colony: str):
     try:
         result = mainController.getColony(colony)
-    except:
-        return "An error has occurred"
-    if result == None:
+    except Exception as e:
+        return e
+    if not result:
         return "Colony not found"
-    else:
-        return result
 
 
 if __name__ == '__main__':

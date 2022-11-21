@@ -50,10 +50,10 @@ class SentimentController:
 
     def getColony(self, colony: str):
         if colony in self.colonies:
-            self.logger.debugLog(self.logTitle, colony)
+            self.logger.debugLog(self.logTitle, "Tried to return colony %s" % colony)
             return self.colonies[colony]
         else:
-            return None
+            return "Colony not found!"
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
