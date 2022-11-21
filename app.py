@@ -56,7 +56,7 @@ def createBot():
     colonyName = requestJSON["colony"]
     botId = requestJSON["id"]
     try:
-        response = mainController.createBot(colonyName, botId)
+        response = mainController.createBot(colonyName, botId, 0.0)
         if response == "success":
             logMessage = 'Created bot: %s' % colonyName
             flaskLogger.debugLog(flaskLogTitle, logMessage)
