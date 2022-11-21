@@ -35,11 +35,11 @@ class SentimentController:
         else:
             return "failure"
 
-    def createBot(self, colony: str, botId: str) -> str:
+    def createBot(self, colony: str, botId: str, initialBalance: float) -> str:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if bot not in self.colonies[colony]:
-                    self.colonies[colony]["bots"].update({str(botId): str(bot.getBalance())})
+                    self.colonies[colony]["bots"][botId] = initialBalance
                     return "success"
                 else:
                     return "failure"
