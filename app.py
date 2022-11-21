@@ -65,7 +65,7 @@ def createBot():
         return str(e)
 
 
-@app.route('/api/v1/colony/<str: colony>')
+@app.route('/api/v1/colony/<colony>')
 def getColony(colony: str):
     try:
         result = mainController.getColony(colony)
