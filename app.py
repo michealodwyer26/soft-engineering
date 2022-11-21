@@ -42,8 +42,8 @@ def createColony():
             logMessage = 'Colony failed: %s' % colonyName
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             return "Invalid colony name"
-    except:
-        return "Internal Server Error"
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/api/v1/bot/create', methods=['POST'])
