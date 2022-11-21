@@ -70,7 +70,7 @@ def createBot():
 
 
 @app.route('/api/v1/bot/update', methods=['POST'])
-def createBot():
+def updateBot():
     requestJSON = request.get_json()
     colonyName = requestJSON["colony"]
     botId = requestJSON["id"]
