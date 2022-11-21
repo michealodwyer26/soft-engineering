@@ -60,7 +60,7 @@ def createBot():
         else:
             logMessage = 'Bot failed: %s for colony %s' % botId, colonyName
             flaskLogger.errorLog(flaskLogTitle, logMessage)
-            return "Bot creation error"
+            return response
     except Exception as e:
         return str(e)
 
