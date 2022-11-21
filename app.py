@@ -50,7 +50,7 @@ def createColony():
 def createBot():
     requestJSON = request.get_json()
     colonyName = requestJSON["colony"]
-    botId = requestJSON["id"]
+    botId = int(requestJSON["id"])
     try:
         response = mainController.createBot(colonyName, botId)
         if response == "success":
