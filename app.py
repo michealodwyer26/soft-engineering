@@ -69,6 +69,7 @@ def createBot():
 def getColony(colony: str):
     try:
         result = mainController.getColony(colony)
+        return result
     except Exception as e:
         return e
     if not result:
