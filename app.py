@@ -46,7 +46,7 @@ def createColony():
             return returnMessage
     except Exception as e:
         print(e)
-        return str(e)
+        return str(response)
 
 
 @app.route('/api/v1/bot/create', methods=['POST'])
