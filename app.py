@@ -37,12 +37,15 @@ def createColony():
         if response == "success":
             logMessage = 'Created colony: %s' % colonyName
             flaskLogger.debugLog(flaskLogTitle, logMessage)
-            return "Created colony %s" % colonyName
+            returnMessage = "Created colony '%s'" % colonyName
+            return returnMessage
         else:
             logMessage = 'Colony failed: %s' % colonyName
             flaskLogger.errorLog(flaskLogTitle, logMessage)
-            return "Invalid colony name '%s'" % colonyName
+            returnMessage = "Invalid colony name '%s'" % colonyName
+            return returnMessage
     except Exception as e:
+        print(e)
         return str(e)
 
 
