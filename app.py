@@ -68,6 +68,7 @@ def createBot():
     except Exception as e:
         return str(e)
 
+
 @app.route('/api/v1/bot/update', methods=['POST'])
 def createBot():
     requestJSON = request.get_json()
@@ -75,13 +76,14 @@ def createBot():
     botId = requestJSON["id"]
     newBalance = requestJSON["balance"]
     try:
-        response = mainController.createBot(colonyName, botId, 0.0)
+        response = mainController.updateBot(colonyName, botId, newBalance)
         if response == "success":
-            logMessage = 'Created bot: %s' % colonyName
+            logMessage = 'Updated bot: %s' % colonyName
             flaskLogger.debugLog(flaskLogTitle, logMessage)
-            return "Success"
+            returnMessage = "Updated balance to %s" % newBalance
+            return returnMessage
         else:
-            logMessage = 'Bot failed: %s for colony %s' % botId, colonyName
+            logMessage = 'Update failed: %s for colony %s' % botId, colonyName
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             return response
     except Exception as e:
