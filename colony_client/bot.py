@@ -97,11 +97,11 @@ class Bot:
     def listenForGodMode(self):
         pass
 
-    def investingState(self):
-        pass
-
     def feedback(self):
-        pass
+        earnings = self._balance - self._initialBalance
+        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
+        
+        return dataJSON
 
     def die(self):
         pass
