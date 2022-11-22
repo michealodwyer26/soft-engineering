@@ -17,6 +17,29 @@ class Bot:
         self.coin = coin
         self.engine = None
 
+    def investInCoin(self):
+        sentiment = self.investingState()
+
+        match sentiment:
+            case "Excellent":
+                amount = self._balance / 0.90
+            case "Great":
+                amount = self._balance / 0.75
+            case "Good":
+                amount = self._balance / 0.5
+            case "Ok":
+                amount = 0
+            case "Bad":
+                self.sellCoin()
+
+        price = self.getCoinPriceEur(1)
+
+        if amount / price > 1:
+            change = (amount / price) - (amount // price)
+            coinAmount = amount // price
+            self._coinBalance += coinAmount
+            self._balance -= amount + change
+
     def investingState(self):
         sentiment = self.getCoinSentiment()
 
