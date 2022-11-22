@@ -17,6 +17,21 @@ class Bot:
         self.coin = coin
         self.engine = None
 
+    def investingState(self):
+        sentiment = self.getCoinSentiment()
+
+        match sentiment:
+            case sentiment if sentiment < 0:
+                return "Bad"
+            case sentiment if sentiment > 0:
+                return "Ok"
+            case sentiment if sentiment > 5:
+                return "Good"
+            case sentiment if sentiment > 10:
+                return "Great"
+            case sentiment if sentiment > 20:
+                return "Excellent"
+
     def sellAllCoin(self):
         if self._coinBalance != 0:
             self._balance += self.getCoinPriceEur(self._coinBalance)
