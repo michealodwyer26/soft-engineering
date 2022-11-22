@@ -38,3 +38,17 @@ Content-Type:application/json
 ```
 
 - The `name` parameter specifies an alphanumeric identifier for a colony.
+
+### Create Bot
+```
+POST /api/v1/bot/create HTTP/1.1
+Host: 65.108.214.180
+Content-Type:application/json
+
+{"colony":"example",
+"id":"1"}
+```
+
+
+- The `colony` parameter specifies an alphanumeric identifier for a colony.
+- The `id` parameter specifies the identifier of the bot that will be created.
