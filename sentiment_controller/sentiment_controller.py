@@ -57,7 +57,7 @@ class SentimentController:
 
     def getBot(self, colony: str, botId: str) -> dict:
         if colony in self.colonies:
-            if botId in self.colonies[colony]:
+            if str(botId) in self.colonies[colony].keys():
                 return {"id": str(botId), "balance": self.colonies[colony][botId]}
         else:
             return {"Error": "Bot not found!"}
