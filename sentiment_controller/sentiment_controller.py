@@ -115,3 +115,27 @@ class SentimentController:
         logMessage = "Analysis of %s complete" % currency
         self.logger.debugLog(self.logTitle, logMessage)
         return finalSentiment
+
+
+    def updateSentimentAnalysis(self, coin):
+        self.connectToDatabase()
+        metaData = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metaData)
+        
+        coinAnalysis = metaData.tables["coins_current"]
+        coinHistory = metaData.tables["coins_history"]
+
+        analysis = self.analyzeCurrency(coin)
+
+        if self.engine.execute(coinAnalysis.select().where(coinAnalysis.columns.coin == coin)).scalar() != None:
+            query = coinAnalysis.update().where(coinAnalysis.columns.coin == coin).values(sentiment=analysis)
+        else:
+            query = coinAnalysis.insert().values(coin=coin, sentiment=analysis)
+        
+        self.engine.execute(query)
+
+        query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
+        self.engine.execute(query)
+
+        self.engine.commit()
+        self.engine.close()
