@@ -26,6 +26,18 @@ class Bot:
             headers={"Content-Type": "application/json"}
         )
 
+    def getCoinSentiment(self):
+        self.updateCoinRequest(self.coin)
+
+        dataJSON = '{"name":"%s"}' % self.coin
+        
+        coinSentiment = requests.post(
+            "http://65.108.214.180/api/v1/coin/update",
+            data=dataJSON,
+            headers={"Content-Type": "application/json"}
+        )
+        return coinSentiment["coinSentiment"]
+
     def investInCoin(self):
         sentiment = self.investingState()
 
