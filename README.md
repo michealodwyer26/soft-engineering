@@ -52,3 +52,17 @@ Content-Type:application/json
 
 - The `colony` parameter specifies an alphanumeric identifier for a colony.
 - The `id` parameter specifies the identifier of the bot that will be created.
+
+### Get Colony
+```
+GET /api/v1/colony/<colony> HTTP/1.1
+Host: 65.108.214.180
+```
+- Fetches a list of bots currently associated with a given `colony`.
+
+### Get Bot
+```
+GET /api/v1/colony/<colony name>/<bot name> HTTP/1.1
+Host: 65.108.214.180
+```
+- Fetches the details of a specified `bot` for a specified `colony`.
