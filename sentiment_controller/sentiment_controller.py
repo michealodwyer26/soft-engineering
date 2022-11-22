@@ -139,3 +139,18 @@ class SentimentController:
 
         self.engine.commit()
         self.engine.close()
+
+    def getCoinSentiment(self, coin):
+
+        self.connectToDatabase()
+        metaData = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metaData)
+        
+        coinAnalysis = metaData.tables["coins_current"]
+
+        query = self.engine.select([coinAnalysis.columns.sentiment]).where(coinAnalysis.columns.coin == coin)
+        sentimentOfCoin = self.engine.execute(query).fetchall()
+
+        self.engine.close()
+
+        return sentimentOfCoin
