@@ -17,6 +17,11 @@ class Bot:
         self.coin = coin
         self.engine = None
 
+    def sellAllCoin(self):
+        if self._coinBalance != 0:
+            self._balance += self.getCoinPriceEur(self._coinBalance)
+            self._coinBalance = 0
+
     def getBalance(self):
         return self._balance
 
@@ -28,9 +33,6 @@ class Bot:
         return self._coinBalance
 
     def listenForGodMode(self):
-        pass
-
-    def listenForResponse(self):
         pass
 
     def investingState(self):
