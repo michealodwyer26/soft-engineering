@@ -24,6 +24,9 @@ class Bot:
         self._balance = balance
         return
 
+    def getCoinBalance(self):
+        return self._coinBalance
+
     def listenForGodMode(self):
         pass
 
@@ -33,7 +36,6 @@ class Bot:
     def investingState(self):
         pass
 
-    # Taking Earnings & Sending Feedback
     def feedback(self):
         pass
 
