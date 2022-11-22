@@ -2,6 +2,7 @@ import re
 import json
 import string
 import datetime
+from datetime import datetime
 import sqlalchemy as db
 import snscrape.modules.twitter as sntwitter
 
@@ -114,21 +115,3 @@ class SentimentController:
         logMessage = "Analysis of %s complete" % currency
         self.logger.debugLog(self.logTitle, logMessage)
         return finalSentiment
-
-    # Adds a new entry of Sentiment analysis to the JSON file coins.json.
-    def coinAnalysisToJson(self, coins):
-        timeOfEvaluation = "Sentiment analysis of currencies for %s" % datetime.datetime.now()
-        newFileData = {timeOfEvaluation: {}}
-
-        for coin in coins:
-            coinData = {coin: SentimentController().analyzeCurrency(coin)}
-            newFileData[timeOfEvaluation].update(coinData)
-
-        with open("../coins.json", "r", encoding='utf-8') as file:
-            fileData = json.load(file)
-
-        fileData.update(newFileData)
-
-        with open("../coins.json", "w", encoding='utf-8') as file:
-            self.logger.debugLog(self.logTitle, "Transferred analysis to JSON")
-            json.dump(fileData, file, ensure_ascii=False, indent=4)
