@@ -36,13 +36,11 @@ class Bot:
     def getCoinSentiment(self):
         dataJSON = '{"name":"%s"}' % self.coin
         
-        requests.post(
+        coinSentiment = requests.post(
             "http://65.108.214.180/api/v1/updateCoin",
             data=dataJSON,
             headers={"Content-Type": "application/json"}
         )
-
-        coinSentiment = ""
         return coinSentiment
 
     def getCoinPriceEur(self, amount):
