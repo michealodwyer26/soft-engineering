@@ -7,23 +7,28 @@ app = Flask(__name__)
 def index():
     return ''
 
-@app.route("/api/v1/updateCoin", methods=["POST"])
-def updateCoin(coin):
+@app.route("/api/v1/coin/update", methods=["POST"])
+def updateCoin():
     requestJSON = request.get_json()
     coin = requestJSON["name"]
 
-    SentimentController().updateSentimentAnalysis(coin)
+    try:
+        SentimentController().updateSentimentAnalysis(coin)
+        response = "Success"
+    except:
+        response = "Failure"
 
-    return "Success"
+    return response
 
-@app.route("/api/v1/getCoinSentiment", methods=["POST"])
-def updateCoin(coin):
+@app.route("/api/v1/coin/sentiment", methods=["POST"])
+def getSentiment():
     requestJSON = request.get_json()
     coin = requestJSON["name"]
 
-    coinSentiment = SentimentController().getCoinSentiment(coin)
+    response = {}
+    response["coinSentiment"] = SentimentController().getCoinSentiment(coin)
 
-    return coinSentiment
+    return response
 
 if __name__ == '__main__':
     #app.run(debug=True)

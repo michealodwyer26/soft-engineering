@@ -28,7 +28,7 @@ class Bot:
         dataJSON = '{"name":"%s"}' % self.coin
         
         requests.post(
-            "http://65.108.214.180/api/v1/updateCoin",
+            "http://65.108.214.180/api/v1/coin/sentiment",
             data=dataJSON,
             headers={"Content-Type": "application/json"}
         )
@@ -37,11 +37,11 @@ class Bot:
         dataJSON = '{"name":"%s"}' % self.coin
         
         coinSentiment = requests.post(
-            "http://65.108.214.180/api/v1/updateCoin",
+            "http://65.108.214.180/api/v1/coin/update",
             data=dataJSON,
             headers={"Content-Type": "application/json"}
         )
-        return coinSentiment
+        return coinSentiment["coinSentiment"]
 
     def getCoinPriceEur(self, amount):
         url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
