@@ -93,6 +93,7 @@ def updateBot():
 @app.route('/api/v1/colony/<colony>/<botId>')
 def getBot(colony: str, botId: int):
     try:
+        botId = str(botId)
         result = mainController.getBot(colony, botId)
         if not result:
             return "Bot not found"
