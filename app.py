@@ -99,6 +99,19 @@ def getColony(colony: str):
     except Exception as e:
         return e
 
+@app.route("/api/v1/coin/update", methods=["POST"])
+def updateCoin():
+    requestJSON = request.get_json()
+    coin = requestJSON["name"]
+
+    try:
+        SentimentController().updateSentimentAnalysis(coin)
+        response = "Success"
+    except Exception as e:
+        response = e
+
+    return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
