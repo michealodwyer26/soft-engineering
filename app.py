@@ -13,21 +13,6 @@ def index():
     return 'Sentiment Controller API'
 
 
-@app.route("/api/v1/coins", methods=["GET"])
-def returnJson():
-    # Sends JSON file of Coin Sentiment Analysis
-    coins = ["BTC", "ETH", "UDST", "BNB", "USDC", "XRP", "BUSD", "DOGE", "ADA", "SOL", "MATIC", "DOT",
-             "STETH", "SHIB", "SHIB", "DAI", "TRX", "OKB", "AVAX", "UNI", "WBTC", "LTC", "ATOM", "LINK",
-             "LEO", "ETC", "ALGO", "CRO", "FTT", "XMR", "XLM", "NEAR", "TON", "BHC", "QNT", "VET", "FIL",
-             "FLOW", "LUNC", "CHZ", "HBAR", "APE", "ICP", "EGLD", "SAND", "AAVE", "XTZ", "FRAX", "MANA",
-             "LDO", "THETA"]
-
-    coinsJSON = {coins.index(i): i for i in coins}
-    # SentimentController.coinAnalysisToJson(coins)
-
-    return coinsJSON
-
-
 @app.route('/api/v1/colony/create', methods=['POST'])
 def createColony():
     requestJSON = request.get_json()
