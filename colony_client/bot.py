@@ -60,6 +60,30 @@ class Bot:
             self._balance += self.getCoinPriceEur(self._coinBalance)
             self._coinBalance = 0
 
+    def getCoinPriceEur(self, amount):
+        url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+        parameters = {
+        'symbol':'{}'.format(self.coin),
+        'amount':'{}'.format(amount),
+        'convert':'EUR'
+        }
+        headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': '76bff3ac-5544-4a06-9814-8326c089a8ac',
+        }
+
+        session = Session()
+        session.headers.update(headers)
+
+        try:
+            response = session.get(url, params=parameters)
+            data = json.loads(response.text)
+            print("Worth of balance in EUR: {}".format(data["data"][0]["quote"]["EUR"]["price"]))
+        except (ConnectionError, Timeout, TooManyRedirects) as e:
+            print(e)
+        
+        return data["data"][0]["quote"]["EUR"]["price"]
+
     def getBalance(self):
         return self._balance
 
