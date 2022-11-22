@@ -23,3 +23,18 @@ self.logger.errorLog(self.logTitle, 'Example Error')
 
 ## sentiment_controller
 `sentiment_controller` runs on the server and interacts with `app.py`.
+
+# API
+
+This section will describe the REST API that interacts with the sentiment controller.
+
+### Create Colony
+```
+POST /api/v1/colony/create HTTP/1.1
+Host: 65.108.214.180
+Content-Type:application/json
+
+{"name":"firstcolony"}
+```
+
+- The `name` parameter specifies an alphanumeric identifier for a colony.
