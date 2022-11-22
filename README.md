@@ -1,10 +1,5 @@
 # Software Engineering
 
-## app.py
-This runs on the main server.
-- `/api/v1/` is empty and a placeholder.
-- `/api/v1/coins` returns the coins in JSON format.
-
 ## custom_logger
 `custom_logger` is a wrapper for the Grafana Loki logging library that vastly simplifies the logging process and reduces it to a single line, as we do not need to make our configuration flexible at all.
 
@@ -27,6 +22,12 @@ self.logger.errorLog(self.logTitle, 'Example Error')
 # API
 
 This section will describe the REST API that interacts with the sentiment controller.
+### API Title
+```
+GET /api/v1 HTTP/1.1
+Host: 65.108.214.180
+```
+Returns a placeholder message for the API route.
 
 ### Create Colony
 ```
