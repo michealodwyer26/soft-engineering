@@ -28,14 +28,7 @@ class Bot:
         earnings = self._balance - self._initialBalance
         dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(self.identifier, self.coin, self._balance, self._coinBalance, self.xpos, self.ypos)
         
-        '''
-        END POINT NOT DECIDED
-        '''
-        requests.post(
-            "http://65.108.214.180/api/v1/TBD",
-            data=dataJSON,
-            headers={"Content-Type": "application/json"}
-        )
+        return dataJSON
 
     def updateCoinRequest(self):
         dataJSON = '{"name":"%s"}' % self.coin
