@@ -62,7 +62,7 @@ def createBot():
             flaskLogger.debugLog(flaskLogTitle, logMessage)
             return "Success"
         else:
-            logMessage = 'Bot failed: %s for colony %s' % botId, colonyName
+            logMessage = 'Bot failed: %s' % botId
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             return response
     except Exception as e:
@@ -83,21 +83,35 @@ def updateBot():
             returnMessage = "Updated balance to %s" % newBalance
             return returnMessage
         else:
-            logMessage = 'Update failed: %s for colony %s' % botId, colonyName
+            logMessage = 'Update failed: %s' % botId
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             return response
     except Exception as e:
         return str(e)
 
+
+@app.route('/api/v1/colony/<colony>/<botId>')
+def getBot(colony: str, botId: int):
+    try:
+        result = mainController.getBot(colony, botId)
+        if not result:
+            return "Bot not found"
+        else:
+            return result
+    except Exception as e:
+        return e
+
+
 @app.route('/api/v1/colony/<colony>')
 def getColony(colony: str):
     try:
         result = mainController.getColony(colony)
-        return result
+        if not result:
+            return "Colony not found"
+        else:
+            return result
     except Exception as e:
         return e
-    if not result:
-        return "Colony not found"
 
 
 if __name__ == '__main__':

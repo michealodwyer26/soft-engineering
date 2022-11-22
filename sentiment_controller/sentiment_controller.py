@@ -35,6 +35,13 @@ class SentimentController:
         else:
             return "failure"
 
+    def getColony(self, colony: str) -> dict:
+        if colony in self.colonies:
+            self.logger.debugLog(self.logTitle, "Tried to return colony %s" % colony)
+            return self.colonies[colony]
+        else:
+            return {"Error": "Colony not found!"}
+
     def createBot(self, colony: str, botId: str, initialBalance: float) -> str:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
@@ -48,6 +55,13 @@ class SentimentController:
         else:
             return "failure"
 
+    def getBot(self, colony: str, botId: int) -> dict:
+        if colony in self.colonies:
+            if botId in self.colonies[colony]:
+                return {"id": str(botId), "balance": self.colonies[colony][botId]}
+        else:
+            return {"Error": "Bot not found!"}
+
     def updateBot(self, colony: str, botId: str, currentBalance: float) -> str:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
@@ -60,13 +74,6 @@ class SentimentController:
                 return str(e)
         else:
             return "failure"
-
-    def getColony(self, colony: str) -> dict:
-        if colony in self.colonies:
-            self.logger.debugLog(self.logTitle, "Tried to return colony %s" % colony)
-            return self.colonies[colony]
-        else:
-            return {"Error": "Colony not found!"}
 
     # Handles data processing and database transfer
     def scraping(self, query: str, limit: int):
