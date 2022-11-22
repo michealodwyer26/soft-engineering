@@ -18,12 +18,6 @@ class Bot:
         self.coin = coin
         self.engine = None
 
-    def connectToDatabase(self):
-        try:
-            self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
-        except Exception as e:
-            self.logger.errorLog(self.logTitle, str(e))
-
     def feedback(self):
         earnings = self._balance - self._initialBalance
         dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(self.identifier, self.coin, self._balance, self._coinBalance, self.xpos, self.ypos)
@@ -38,22 +32,18 @@ class Bot:
             data=dataJSON,
             headers={"Content-Type": "application/json"}
         )
-
+    
     def getCoinSentiment(self):
-        self.updateCoinRequest()
-
-        self.connectToDatabase()
-        metaData = db.MetaData(bind=self.engine)
-        db.MetaData.reflect(metaData)
+        dataJSON = '{"name":"%s"}' % self.coin
         
-        coinAnalysis = metaData.tables["coins_current"]
+        requests.post(
+            "http://65.108.214.180/api/v1/updateCoin",
+            data=dataJSON,
+            headers={"Content-Type": "application/json"}
+        )
 
-        query = self.engine.select([coinAnalysis.columns.sentiment]).where(coinAnalysis.columns.coin == self.coin)
-        sentimentOfCoin = self.engine.execute(query).fetchall()
-
-        self.engine.close()
-
-        return sentimentOfCoin
+        coinSentiment = ""
+        return coinSentiment
 
     def getCoinPriceEur(self, amount):
         url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'

@@ -16,6 +16,15 @@ def updateCoin(coin):
 
     return "Success"
 
+@app.route("/api/v1/getCoinSentiment", methods=["POST"])
+def updateCoin(coin):
+    requestJSON = request.get_json()
+    coin = requestJSON["name"]
+
+    coinSentiment = SentimentController().getCoinSentiment(coin)
+
+    return coinSentiment
+
 if __name__ == '__main__':
     #app.run(debug=True)
 

@@ -87,6 +87,22 @@ class SentimentController:
         self.engine.commit()
         self.engine.close()
 
+    def getCoinSentiment(self):
+        self.updateCoinRequest()
+
+        self.connectToDatabase()
+        metaData = db.MetaData(bind=self.engine)
+        db.MetaData.reflect(metaData)
+        
+        coinAnalysis = metaData.tables["coins_current"]
+
+        query = self.engine.select([coinAnalysis.columns.sentiment]).where(coinAnalysis.columns.coin == self.coin)
+        sentimentOfCoin = self.engine.execute(query).fetchall()
+
+        self.engine.close()
+
+        return sentimentOfCoin
+
     # Adds a new entry of Sentiment analysis to the JSON file coins.json.
     def coinAnalysisToJson(self, coins):
         timeOfEvaluation = "Sentiment analysis of currencies for %s" % datetime.datetime.now()
