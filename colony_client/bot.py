@@ -132,5 +132,5 @@ class Bot:
             await asyncio.gather(self.main())
 
     async def main(self):
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
         self.investInCoin()
