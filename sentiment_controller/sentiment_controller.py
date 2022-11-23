@@ -1,4 +1,5 @@
 import re
+import os
 import json
 import string
 import datetime
@@ -21,8 +22,11 @@ class SentimentController:
         self.colonies = {}
 
     def connectToDatabase(self):
+        sql_user = os.environ.get("SQL_USER")
+        sql_pass = os.environ.get("SQL_PASS")
+        queryString = "mysql+pymysql://" + sql_user + ":" + sql_pass + "@localhost/project"
         try:
-            self.engine = db.create_engine("mysql+pymysql://softwareuser:$B4s3dcrypt0$@localhost/project")
+            self.engine = db.create_engine(queryString)
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
 
