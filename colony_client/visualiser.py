@@ -5,22 +5,21 @@ from pygame.locals import *
 from sys import exit
 from random import *
 
-screen = pygame.display.set_mode((500, 500), 0,32)
-pygame.display.set_caption("Crypto Bot Colony")
 
 class Bot:
     def __init__(self):
+        self.screen = pygame.display.set_mode((500, 500), 0,32)
         self.pos = (randint(20,480), randint(20,480))
         self.color = (randint(0,255), randint(0,255), randint(0,255))
         self.size = ((20,20))
 
     def draw(self):
-        pygame.draw.rect(screen, self.color, Rect(self.pos, self.size))
+        pygame.draw.rect(self.screen, self.color, Rect(self.pos, self.size))
 
 
 class CoreController:
     def draw(self):
-        pygame.draw.circle(screen, (255, 255, 255), (250, 250), 30)
+        pygame.draw.circle(self.screen, (255, 255, 255), (250, 250), 30)
 
 
 class Visualiser:
@@ -40,21 +39,21 @@ class Visualiser:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
-            screen.lock()
+            self.screen.lock()
             CoreController().draw()
             for bot in self.bots:
                 bot.draw()
-            screen.unlock()
+            self.screen.unlock()
             pygame.display.update()
 
 
-cs = CoreController #create corecontroller
-vis = Visualiser(cs) #add it to the visualizer
-vis.addBot() #add bots to visualixer bot list
-vis.addBot()
-vis.addBot()
-vis.addBot()
-vis.run() # run visulaizer
+# cs = CoreController #create corecontroller
+# vis = Visualiser(cs) #add it to the visualizer
+# vis.addBot() #add bots to visualixer bot list
+# vis.addBot()
+# vis.addBot()
+# vis.addBot()
+# vis.run() # run visulaizer
 
 # class Visualiser:
 #     def __init__(self):
