@@ -1,5 +1,8 @@
 # Software Engineering
 
+Disclaimer:
+We are aware that there are hardcoded credentials in the repository. These have been rotated and **do not work**. Have a nice day.
+
 ## custom_logger
 `custom_logger` is a wrapper for the Grafana Loki logging library that vastly simplifies the logging process and reduces it to a single line, as we do not need to make our configuration flexible at all.
 
