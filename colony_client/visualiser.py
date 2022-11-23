@@ -7,14 +7,18 @@ from random import *
 
 
 class VisualBot:
-    def __init__(self, screen):
-        self.pos = (randint(20, 480), randint(20, 480))
+    def __init__(self, screen, index):
+        self.index = index  # Identifier with the visualiser
+        self.pos = (30, (20 + (40 * self.index)))
         self.color = (randint(0, 255), randint(0, 255), randint(0, 255))
         self.size = (20, 20)
         self.renderer = screen
 
     def draw(self):
         pygame.draw.rect(self.renderer, self.color, Rect(self.pos, self.size))
+
+    def updateData(self):
+        pass
 
 
 class VisualCoreController:
@@ -29,11 +33,13 @@ class Visualiser:
     def __init__(self, coreController):
         self.coreController = coreController
         self.bots = []
+        self.currentIndex = 0
         self.screen = pygame.display.set_mode((500, 500), 0, 32)
         pygame.init()
 
     def addBot(self):
-        self.bots.append(VisualBot(self.screen))
+        self.bots.append(VisualBot(self.screen, self.currentIndex))
+        self.currentIndex += 1
 
     def run(self):
 

@@ -7,7 +7,8 @@ from colony_client.visualiser import Visualiser
 
 testCoreController = CoreController("demo")
 vis = Visualiser(testCoreController)
-testCoreController.createBot("demo")
+testCoreController.createBot("demoCoin1")
+testCoreController.createBot("demoCoin2")
 
 response = requests.get("http://65.108.214.180/api/v1/colony/demo")
 json = response.json()
