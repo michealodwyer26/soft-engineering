@@ -18,3 +18,8 @@ def test_delete_core_controller_bot() -> None:
     coreController.deleteBot(coreController.bots[-1])
     assert len(coreController.bots) == 0
 
+
+def test_notify_sentiment_controller() -> None:
+    coreController = CoreController("testnotifysentiment")
+    coreController.notifySentimentController()
+    assert len(coreController.bots) == 0
