@@ -5,11 +5,10 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
 class Bot:
-    def __init__(self, identifier, coinBalance, balance, coin):
+    def __init__(self, identifier, coin):
         self.identifier = identifier
-        self._coinBalance = coinBalance
-        self._balance = balance
-        self._initialBalance = balance
+        self._coinBalance = 0
+        self._balance = 0
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()

@@ -17,9 +17,11 @@ class Bot:
     def draw(self):
         pygame.draw.rect(screen, self.color, Rect(self.pos, self.size))
 
+
 class CoreController:
     def draw(self):
         pygame.draw.circle(screen, (255, 255, 255), (250, 250), 30)
+
 
 class Visualiser:
     def __init__(self, coreController):

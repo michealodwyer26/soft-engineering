@@ -37,11 +37,16 @@ def createColony():
 
 @app.route('/api/v1/bot/create', methods=['POST'])
 def createBot():
+    # Fetch the JSON data from the POST request
     requestJSON = request.get_json()
     colonyName = requestJSON["colony"]
     botId = requestJSON["id"]
+    botCoin = requestJSON["coin"]
+
     try:
-        response = mainController.createBot(colonyName, botId, 0.0)
+        response = mainController.createBot(colonyName, botId, botCoin)  # Tells the sentiment controller to update
+        # itself.
+
         if response == "success":
             logMessage = 'Created bot: %s' % colonyName
             flaskLogger.debugLog(flaskLogTitle, logMessage)
@@ -113,7 +118,7 @@ def updateCoin():
 
     return response
 
-    
+
 @app.route("/api/v1/coin/sentiment", methods=["POST"])
 def getSentiment():
     requestJSON = request.get_json()
@@ -123,6 +128,7 @@ def getSentiment():
     response["coinSentiment"] = SentimentController().getCoinSentiment(coin)
 
     return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
