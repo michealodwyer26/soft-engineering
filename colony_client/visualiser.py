@@ -56,7 +56,7 @@ class Visualiser:
 
         for bot in self.bots:
             if bot.xpos:
-                textToRender = json["bots"][self.bots.index(bot)]
+                textToRender = str(json["bots"][self.bots.index(bot)])
                 self.renderText(textToRender, bot.xpos + 30, bot.ypos)
                 pygame.display.update()
 
