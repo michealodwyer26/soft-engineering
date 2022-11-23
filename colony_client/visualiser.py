@@ -1,5 +1,5 @@
-from .bot import Bot
-from .core_controller import CoreController
+# from .bot import Bot
+# from .core_controller import CoreController
 import pygame 
 from pygame.locals import *
 from sys import exit
@@ -9,10 +9,11 @@ screen = pygame.display.set_mode((500, 500), 0,32)
 pygame.display.set_caption("Crypto Bot Colony")
 
 class Bot:
-    def __init__(self, pos, color, size):
-        self.pos = pos
-        self.color = color
-        self.size = size
+    def __init__(self):
+        self.pos = (randint(20,480), randint(20,480))
+        self.color = (randint(0,255), randint(0,255), randint(0,255))
+        self.size = ((20,20))
+
     def draw(self):
         pygame.draw.rect(screen, self.color, Rect(self.pos, self.size))
 
@@ -21,29 +22,37 @@ class CoreController:
         pygame.draw.circle(screen, (255, 255, 255), (250, 250), 30)
 
 class Visualiser:
-    def __init__(self):
+    def __init__(self, coreController):
+        self.coreController = coreController
+        self.bots = [] 
         pygame.init()
-        bots = []     
+        # for i in range(10):
+        #     self.bots.append(Bot())
 
-        for i in range(10):
-            randomColor = (randint(0,255), randint(0,255), randint(0,255))
-            randomPos = (randint(20,480), randint(20,480))
-            size = ((20, 20))
-            bots.append(Bot(randomPos, randomColor, size))
+    def addBot(self):
+        self.bots.append(Bot())
 
+    def run(self):
+        pygame.init()
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
             screen.lock()
             CoreController().draw()
-            for bot in bots:
+            for bot in self.bots:
                 bot.draw()
             screen.unlock()
             pygame.display.update()
 
 
-vis = Visualiser()
+cs = CoreController #create corecontroller
+vis = Visualiser(cs) #add it to the visualizer
+vis.addBot() #add bots to visualixer bot list
+vis.addBot()
+vis.addBot()
+vis.addBot()
+vis.run() # run visulaizer
 
 # class Visualiser:
 #     def __init__(self):
