@@ -46,11 +46,13 @@ class SentimentController:
     def createBot(self, colony: str, botId: str, botCoin: str) -> str:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
-                if botId not in self.colonies[colony]["bots"]:
-                    self.colonies[colony]["bots"].append({"id": botId, "coinAmount": 0, "coinName": botCoin})
-                    return "success"
-                else:
-                    return "failure"
+                for botData in self.colonies[colony]["bots"]:
+                    if botData["id"] == botId:
+                        return "failure"
+
+                self.colonies[colony]["bots"].append({"id": botId, "coinAmount": 0, "coinName": botCoin})
+                return "success"
+
             except Exception as e:
                 return str(e)
         else:
