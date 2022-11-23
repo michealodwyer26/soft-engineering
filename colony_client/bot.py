@@ -3,6 +3,7 @@ import requests
 from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
+import asyncio
 
 class Bot:
     def __init__(self, identifier, coin):
@@ -125,3 +126,11 @@ class Bot:
 
     def die(self):
         pass
+    
+    async def run(self):
+        while True:
+            await asyncio.gather(self.main())
+
+    async def main(self):
+        await asyncio.sleep(5)
+        self.investInCoin()
