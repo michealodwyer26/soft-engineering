@@ -47,6 +47,7 @@ class SentimentController:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if botId not in self.colonies[colony]["bots"]:
+                    self.colonies[colony]["bots"][botId] = {}
                     self.colonies[colony]["bots"][botId]["coinAmount"] = 0
                     self.colonies[colony]["bots"][botId]["coinName"] = botCoin
                     return "success"
