@@ -38,6 +38,7 @@ class Visualiser:
         self.currentIndex = 0
         self.screen = pygame.display.set_mode((500, 500), 0, 32)
         self.font = pygame.font.SysFont('Times', 16)
+
     def renderText(self, message: str, posX, posY):
         text = self.font.render(message, True, (255, 255, 255))
         self.screen.blit(text, (posX, posY))
@@ -49,7 +50,7 @@ class Visualiser:
         json = response.json()
         print(json)
 
-        while len(json["bots"].keys()) > len(self.bots):
+        while len(json["bots"]) > len(self.bots):
             self.bots.append(self.addBot())
             print("Added a VisualBot")
 

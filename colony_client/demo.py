@@ -14,6 +14,6 @@ response = requests.get("http://65.108.214.180/api/v1/colony/demo")
 json = response.json()
 print(json)
 
-for i in json['bots'].keys():
+for i in json['bots']:
     vis.addBot()
 vis.run()
