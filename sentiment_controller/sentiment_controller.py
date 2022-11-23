@@ -29,7 +29,7 @@ class SentimentController:
     def createColony(self, colony: str) -> str:
         if re.match("^[A-Za-z0-9]*$", colony):
             if colony not in self.colonies:
-                self.colonies[colony] = {"bots": {}}
+                self.colonies[colony] = {"bots": []}
                 return "success"
             else:
                 return "failure"
@@ -47,9 +47,7 @@ class SentimentController:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if botId not in self.colonies[colony]["bots"]:
-                    self.colonies[colony]["bots"][botId] = {}
-                    self.colonies[colony]["bots"][botId]["coinAmount"] = 0
-                    self.colonies[colony]["bots"][botId]["coinName"] = botCoin
+                    self.colonies["bots"].append({"id": botId, "coinAmount": 0, "coinName": botCoin})
                     return "success"
                 else:
                     return "failure"
