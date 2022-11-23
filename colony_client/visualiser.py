@@ -69,8 +69,11 @@ class Visualiser:
         pygame.init()
         elapsedTime = 0
         clock = pygame.time.Clock()
-
+        firstIteration = False
         while True:
+            if not firstIteration:
+                self.updateBotData(self.coreController.identifier)
+                firstIteration = True
 
             currentTime = clock.tick()
             elapsedTime += currentTime
