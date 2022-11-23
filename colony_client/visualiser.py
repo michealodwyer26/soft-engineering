@@ -24,9 +24,11 @@ class VisualBot:
 class VisualCoreController:
     def __init__(self, screen):
         self.renderer = screen
+        self.xpos = 250
+        self.ypos = 250
 
     def draw(self):
-        pygame.draw.circle(self.renderer, (255, 255, 255), (250, 250), 30)
+        pygame.draw.circle(self.renderer, (255, 255, 255), (self.xpos, self.ypos), 30)
 
 
 class Visualiser:
@@ -70,11 +72,8 @@ class Visualiser:
         elapsedTime = 0
         clock = pygame.time.Clock()
         firstIteration = False
-        while True:
-            if not firstIteration:
-                self.updateBotData(self.coreController.identifier)
-                firstIteration = True
 
+        while True:
             currentTime = clock.tick()
             elapsedTime += currentTime
 
@@ -83,13 +82,19 @@ class Visualiser:
                     exit()
             self.screen.lock()
 
-            VisualCoreController(self.screen).draw()
+            vCore = VisualCoreController(self.screen)
+            vCore.draw()
 
             for bot in self.bots:
                 bot.draw()
 
             self.screen.unlock()
             pygame.display.update()
+
+            if not firstIteration:
+                self.updateBotData(self.coreController.identifier)
+                self.renderText(self.coreController.identifier, vCore.xpos - 20, vCore.ypos + 40)
+                firstIteration = True
 
             if elapsedTime > 5000:
                 self.updateBotData(self.coreController.identifier)
