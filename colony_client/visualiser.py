@@ -38,8 +38,17 @@ class Visualiser:
     def run(self):
 
         pygame.init()
+        elapsedTime = 0
+        clock = pygame.time.Clock()
 
         while True:
+
+            currentTime = clock.tick()
+            elapsedTime += currentTime
+
+            if elapsedTime > 5000:
+                pass  # Triggers every 5 seconds. Update the view with new information.
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
@@ -52,4 +61,3 @@ class Visualiser:
 
             self.screen.unlock()
             pygame.display.update()
-
