@@ -72,16 +72,16 @@ class SentimentController:
             return "failure"
 
     def getBot(self, colony: str, botId: str) -> dict:
+
         if colony in self.colonies:
-            if botId in self.colonies[colony]["bots"]:
-                for iterBot in self.colonies[colony]["bots"]:
-                    if iterBot["botId"] == botId:
-                        coinName = iterBot["coinName"]
+            for botData in self.colonies[colony]["bots"]:
+                if botData["id"] == botId:
+                    coinName = botData["coinName"]
                 if coinName is None:
                     coinName = ""
 
                 return {
-                    "id": str(botId),
+                    "id": botId,
                     "details": {
                         "balance": self.colonies[colony]["bots"][botId]["coinAmount"],
                         "coinName": coinName
