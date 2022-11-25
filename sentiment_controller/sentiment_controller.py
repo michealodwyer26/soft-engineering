@@ -219,11 +219,11 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT state FROM coins_current WHERE coin = '%s'"
+                    query = "SELECT state FROM coins_current WHERE coin=%s"
                     try:
                         result = cursor.execute(query, (coin,))
                         self.logger.debugLog(self.logTitle, str(result))
-                        return result
+                        return str(result)
                     except Exception as e:
                         message = str(e)
                         self.logger.errorLog(self.logTitle, message)
