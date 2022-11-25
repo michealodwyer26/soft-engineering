@@ -87,17 +87,30 @@ def updateBot():
 def getBot(colony: str, botId: int):
     try:
         botId = str(botId)
-        result = mainController.getBot(colony, botId)
-        botCoin = mainController.getBot(colony, botId)["details"]["coinName"]
-        coinState = mainController.getCurrentCoinState(botCoin)
+        try:
+            result = mainController.getBot(colony, botId)
+        except Exception as e:
+            return str(e)
+
+        try:
+            botCoin = mainController.getBot(colony, botId)["details"]["coinName"]
+        except Exception as e:
+            return str(e)
+
+        try:
+            coinState = mainController.getCurrentCoinState(botCoin)
+        except Exception as e:
+            return str(e)
+
         result.update({"coinState": coinState})
 
         if not result:
             return "Bot not found"
         else:
             return result
+
     except Exception as e:
-        return e
+        return str(e)
 
 
 @app.route('/api/v1/colony/<colony>')
