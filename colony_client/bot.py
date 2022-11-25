@@ -1,9 +1,10 @@
-from custom_logger import Logger
-import requests
-from requests import Request, Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import asyncio
+import requests
+from custom_logger import Logger
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+
 
 class Bot:
     def __init__(self, identifier, coin):
@@ -17,20 +18,24 @@ class Bot:
         self.coin = coin
         self.engine = None
 
+    # A request to the server is made to perform sentiment analysis on self.coin
     def updateCoinRequest(self):
         dataJSON = '{"name":"%s"}' % self.coin
-        
-        requests.post(
-            "http://65.108.214.180/api/v1/coin/sentiment",
-            data=dataJSON,
-            headers={"Content-Type": "application/json"}
-        )
+        try:
+            requests.post(
+                "http://65.108.214.180/api/v1/coin/sentiment",
+                data=dataJSON,
+                headers={"Content-Type": "application/json"}
+            )
+        except Exception as e:
+            message = str(e)
+            self.logger.errorLog("bot", message)
 
     def getCoinSentiment(self):
         self.updateCoinRequest(self.coin)
 
         dataJSON = '{"name":"%s"}' % self.coin
-        
+
         coinSentiment = requests.post(
             "http://65.108.214.180/api/v1/coin/update",
             data=dataJSON,
@@ -84,13 +89,13 @@ class Bot:
     def getCoinPriceEur(self, amount):
         url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
         parameters = {
-        'symbol':'{}'.format(self.coin),
-        'amount':'{}'.format(amount),
-        'convert':'EUR'
+            'symbol': '{}'.format(self.coin),
+            'amount': '{}'.format(amount),
+            'convert': 'EUR'
         }
         headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': '76bff3ac-5544-4a06-9814-8326c089a8ac',
+            'Accepts': 'application/json',
+            'X-CMC_PRO_API_KEY': '76bff3ac-5544-4a06-9814-8326c089a8ac',
         }
 
         session = Session()
@@ -102,7 +107,7 @@ class Bot:
             print("Worth of balance in EUR: {}".format(data["data"][0]["quote"]["EUR"]["price"]))
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
-        
+
         return data["data"][0]["quote"]["EUR"]["price"]
 
     def getBalance(self):
@@ -120,13 +125,14 @@ class Bot:
 
     def feedback(self):
         earnings = self._balance - self._initialBalance
-        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
-        
+        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(
+            self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
+
         return dataJSON
 
     def die(self):
         pass
-    
+
     async def run(self):
         while True:
             await asyncio.gather(self.main())
