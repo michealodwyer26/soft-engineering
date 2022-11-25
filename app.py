@@ -96,7 +96,7 @@ def getBot(colony: str, botId: int):
         return str(e)
 
     try:
-        coinState = mainController.getCurrentCoinState(botCoin)
+        coinState = mainController.getCoinState(botCoin)
         result["details"].update({"coinState": coinState})
     except Exception as e:
         print("getCurrentCoinState error")
@@ -139,9 +139,7 @@ def updateCoin():
 def getSentiment():
     requestJSON = request.get_json()
     coin = requestJSON["name"]
-
-    response = {}
-    response["coinSentiment"] = SentimentController().getCoinSentiment(coin)
+    response = {"coinSentiment": SentimentController().getCoinSentiment(coin)}
 
     return response
 
