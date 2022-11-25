@@ -212,7 +212,7 @@ class SentimentController:
                         message = str(e)
                         self.logger.errorLog(self.logTitle, message)
 
-    def getCoinState(self, coin: str) -> dict:
+    def getCoinState(self, coin: str) -> str:
 
         connection = self.connectToDatabase()
 
@@ -222,9 +222,9 @@ class SentimentController:
                     query = "SELECT state FROM coins_current WHERE coin=%s"
                     try:
                         cursor.execute(query, (coin,))
-                        result = str(cursor.fetchone())
+                        result = cursor.fetchone()["state"]
                         self.logger.debugLog(self.logTitle, result)
-                        return result["state"]
+                        return result
 
                     except Exception as e:
                         message = str(e)
