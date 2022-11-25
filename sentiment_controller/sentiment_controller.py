@@ -212,7 +212,7 @@ class SentimentController:
                         message = str(e)
                         self.logger.errorLog(self.logTitle, message)
 
-    def getCoinState(self, coin: str):
+    def getCoinState(self, coin: str) -> dict:
 
         connection = self.connectToDatabase()
 
