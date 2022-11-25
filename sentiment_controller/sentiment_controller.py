@@ -60,6 +60,7 @@ class SentimentController:
                         return "failure"
 
                 # Adds the bot to the bot array
+
                 self.colonies[colony]["bots"].append({"id": botId, "coinAmount": 0, "coinName": botCoin})
                 return "success"
 
