@@ -162,7 +162,7 @@ class SentimentController:
                         connection.commit()
                     except Exception as e:
                         message = str(e)
-                        self.logger.errorLog(message)
+                        self.logger.errorLog(self.logTitle, message)
 
     # Changes the current status of coin analysis to "processing"
     def setProcessingState(self, coin: str):
@@ -178,7 +178,7 @@ class SentimentController:
                         connection.commit()
                     except Exception as e:
                         message = str(e)
-                        self.logger.errorLog(message)
+                        self.logger.errorLog(self.logTitle, message)
 
     # Changes the current status of coin analysis to "done"
     def setFinishedState(self, coin: str):
@@ -194,7 +194,7 @@ class SentimentController:
                         connection.commit()
                     except Exception as e:
                         message = str(e)
-                        self.logger.errorLog(message)
+                        self.logger.errorLog(self.logTitle, message)
 
     # Performs an SQL query to retrieve the latest sentiment value from the database.
     def getCoinSentiment(self, coin):
@@ -210,7 +210,7 @@ class SentimentController:
                         return result
                     except Exception as e:
                         message = str(e)
-                        self.logger.errorLog(message)
+                        self.logger.errorLog(self.logTitle, message)
 
     def getCoinState(self, coin: str):
 
@@ -225,4 +225,4 @@ class SentimentController:
                         return result
                     except Exception as e:
                         message = str(e)
-                        self.logger.errorLog(message)
+                        self.logger.errorLog(self.logTitle, message)
