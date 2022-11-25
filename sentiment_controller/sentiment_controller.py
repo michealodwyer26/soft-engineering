@@ -155,7 +155,7 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "UPDATE coins_current SET sentiment = %s, timestamp = %s WHERE coin == %s"
+                    query = "UPDATE coins_current SET sentiment = %s, timestamp = %s WHERE coin = %s"
                     try:
                         timestamp = time.time()
                         cursor.execute(query, (coin, timestamp, analysis))
@@ -172,7 +172,7 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "UPDATE coins_current SET state = %s WHERE coin == %s"
+                    query = "UPDATE coins_current SET state = %s WHERE coin = %s"
                     try:
                         cursor.execute(query, (coin, "processing"))
                         connection.commit()
@@ -188,7 +188,7 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "UPDATE coins_current SET state = %s WHERE coin == %s"
+                    query = "UPDATE coins_current SET state = %s WHERE coin = %s"
                     try:
                         cursor.execute(query, (coin, "done"))
                         connection.commit()
@@ -204,7 +204,7 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT coin FROM coins_current WHERE coin == %s"
+                    query = "SELECT coin FROM coins_current WHERE coin = %s"
                     try:
                         result = cursor.execute(query, (coin,))
                         return result
@@ -219,7 +219,7 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT state FROM coins_current WHERE coin == %s"
+                    query = "SELECT state FROM coins_current WHERE coin = %s"
                     try:
                         result = cursor.execute(query, (coin,))
                         return result
