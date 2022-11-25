@@ -56,7 +56,7 @@ class SentimentController:
             try:
                 for botData in self.colonies[colony]["bots"]:
                     if botData["id"] == botId:
-                        self.logger.errorLog("Duplicate bot creation attempted")
+                        self.logger.errorLog(self.logTitle, "Duplicate bot creation attempted")
                         return "failure"
 
                 # Adds the bot to the bot array
