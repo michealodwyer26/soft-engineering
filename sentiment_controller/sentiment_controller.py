@@ -59,11 +59,14 @@ class SentimentController:
                         self.logger.errorLog("Duplicate bot creation attempted")
                         return "failure"
 
+                # Adds the bot to the bot array
                 self.colonies[colony]["bots"].append({"id": botId, "coinAmount": 0, "coinName": botCoin})
                 return "success"
 
             except Exception as e:
-                return str(e)
+                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                message = template.format(type(e).__name__, e.args)
+                return message
         else:
             return "failure"
 
