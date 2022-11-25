@@ -96,8 +96,8 @@ def getBot(colony: str, botId: int):
         return str(e)
 
     try:
-        coinState = mainController.getCoinState(botCoin)["state"]
-        result["details"].update({"coinState": coinState})
+        coinState = mainController.getCoinState(botCoin)
+        result["details"]["coinState"] = coinState
     except Exception as e:
         print("getCurrentCoinState error")
         return str(e)
