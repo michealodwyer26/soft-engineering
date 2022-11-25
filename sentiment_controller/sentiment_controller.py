@@ -76,14 +76,16 @@ class SentimentController:
         if colony in self.colonies:
             for botData in self.colonies[colony]["bots"]:
                 if botData["id"] == botId:
+                    coinAmount = botData["coinAmount"]
                     coinName = botData["coinName"]
                 if coinName is None:
+                    coinAmount = 0
                     coinName = ""
 
                 return {
                     "id": botId,
                     "details": {
-                        "balance": self.colonies[colony]["bots"][botId]["coinAmount"],
+                        "balance": coinAmount,
                         "coinName": coinName
                     }
                 }
