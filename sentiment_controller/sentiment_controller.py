@@ -224,7 +224,7 @@ class SentimentController:
                         cursor.execute(query, (coin,))
                         result = str(cursor.fetchone())
                         self.logger.debugLog(self.logTitle, result)
-                        return result
+                        return result["state"]
 
                     except Exception as e:
                         message = str(e)
