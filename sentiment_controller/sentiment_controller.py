@@ -1,10 +1,9 @@
 import re
 import os
-import json
 import string
 import datetime
+import pymysql
 from datetime import datetime
-import sqlalchemy as db
 import snscrape.modules.twitter as sntwitter
 
 from custom_logger import Logger
@@ -15,20 +14,24 @@ from colony_client import bot, core_controller, god_mode_controller, visualiser
 class SentimentController:
 
     def __init__(self):
-        self.engine = None
+        self.colonies = {}
         self.logger = Logger()
         self.logTitle = "sentiment"
         self.sia = SentimentIntensityAnalyzer()
-        self.colonies = {}
 
     def connectToDatabase(self):
         sql_user = os.environ.get("SQL_USER")
         sql_pass = os.environ.get("SQL_PASS")
-        queryString = "mysql+pymysql://" + sql_user + ":" + sql_pass + "@localhost/project"
         try:
-            self.engine = db.create_engine(queryString)
+            connection = pymysql.connect(host='localhost',
+                                         user=sql_user,
+                                         password=sql_pass,
+                                         database='project',
+                                         cursorclass=pymysql.cursors.DictCursor)
+            return connection
         except Exception as e:
             self.logger.errorLog(self.logTitle, str(e))
+            return None
 
     def createColony(self, colony: str) -> str:
         if re.match("^[A-Za-z0-9]*$", colony):
@@ -79,7 +82,7 @@ class SentimentController:
         if re.match("^[A-Za-z0-9]*$", botId):
             try:
                 if botId in self.colonies[colony]["bots"]:
-                    self.colonies[colony]["bots"][botId] = currentBalance
+                    self.colonies[colony]["bots"][botId]["coinAmount"] = currentBalance
                     return "success"
                 else:
                     return "failure"
@@ -112,7 +115,6 @@ class SentimentController:
     def analyzeCurrency(self, currency):
         finalSentiment = 0
         tweets = self.scraping("#" + currency, 100)
-        self.connectToDatabase()
 
         for tweet in tweets:
             try:
@@ -128,41 +130,34 @@ class SentimentController:
         self.logger.debugLog(self.logTitle, logMessage)
         return finalSentiment
 
-
-    def updateSentimentAnalysis(self, coin):
-        self.connectToDatabase()
-        metaData = db.MetaData(bind=self.engine)
-        db.MetaData.reflect(metaData)
-        
-        coinAnalysis = metaData.tables["coins_current"]
-        coinHistory = metaData.tables["coins_history"]
+    # Assumes that the coin already exists in the database.
+    def updateSentimentAnalysis(self, coin: str):
 
         analysis = self.analyzeCurrency(coin)
+        connection = self.connectToDatabase()
 
-        if self.engine.execute(coinAnalysis.select().where(coinAnalysis.columns.coin == coin)).scalar() != None:
-            query = coinAnalysis.update().where(coinAnalysis.columns.coin == coin).values(sentiment=analysis)
-        else:
-            query = coinAnalysis.insert().values(coin=coin, sentiment=analysis)
-        
-        self.engine.execute(query)
-
-        query = coinHistory.insert().values(time=str(datetime.now())[0:19], coin=coin, sentiment=analysis)
-        self.engine.execute(query)
-
-        self.engine.commit()
-        self.engine.close()
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "UPDATE coins_current SET sentiment = %s WHERE coin == %s"
+                    try:
+                        cursor.execute(query, (coin, analysis))
+                        connection.commit()
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
 
     def getCoinSentiment(self, coin):
 
-        self.connectToDatabase()
-        metaData = db.MetaData(bind=self.engine)
-        db.MetaData.reflect(metaData)
-        
-        coinAnalysis = metaData.tables["coins_current"]
+        connection = self.connectToDatabase()
 
-        query = self.engine.select([coinAnalysis.columns.sentiment]).where(coinAnalysis.columns.coin == coin)
-        sentimentOfCoin = self.engine.execute(query).fetchall()
-
-        self.engine.close()
-
-        return sentimentOfCoin
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT coin FROM coins_current WHERE coin == %s"
+                    try:
+                        result = cursor.execute(query, (coin,))
+                        return result
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
