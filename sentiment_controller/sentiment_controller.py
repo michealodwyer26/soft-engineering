@@ -107,21 +107,6 @@ class SentimentController:
                 tweets.append(text)
         return tweets
 
-    def requestListener(self, coin: str):
-
-        connection = self.connectToDatabase()
-
-        if connection:
-            with connection:
-                with connection.cursor() as cursor:
-                    query = "SELECT state FROM coins_current WHERE coin == %s"
-                    try:
-                        result = cursor.execute(query, (coin,))
-                        return result
-                    except Exception as e:
-                        message = str(e)
-                        self.logger.errorLog(message)
-
     # Returns current sentiment of a coin.
     def analyzeCurrency(self, coin: str):
 
@@ -207,6 +192,21 @@ class SentimentController:
             with connection:
                 with connection.cursor() as cursor:
                     query = "SELECT coin FROM coins_current WHERE coin == %s"
+                    try:
+                        result = cursor.execute(query, (coin,))
+                        return result
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
+
+    def getCurrentCoinState(self, coin: str):
+
+        connection = self.connectToDatabase()
+
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT state FROM coins_current WHERE coin == %s"
                     try:
                         result = cursor.execute(query, (coin,))
                         return result

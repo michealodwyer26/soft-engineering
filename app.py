@@ -85,6 +85,10 @@ def getBot(colony: str, botId: int):
     try:
         botId = str(botId)
         result = mainController.getBot(colony, botId)
+        botCoin = mainController.getBot(colony, botId)["details"]["coinName"]
+        coinState = mainController.getCurrentCoinState(botCoin)
+        result.update({"coinState": coinState})
+
         if not result:
             return "Bot not found"
         else:
