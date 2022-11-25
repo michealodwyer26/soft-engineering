@@ -17,6 +17,7 @@ def index():
 def createColony():
     requestJSON = request.get_json()
     colonyName = str(requestJSON["name"])
+
     try:
         response = mainController.createColony(colonyName)
         if response == "success":
@@ -29,6 +30,7 @@ def createColony():
             flaskLogger.errorLog(flaskLogTitle, logMessage)
             returnMessage = "Invalid colony name '%s'" % colonyName
             return returnMessage
+
     except Exception as e:
         print(e)
         exceptionMessage = "Unhandled error: %s" % str(e)
