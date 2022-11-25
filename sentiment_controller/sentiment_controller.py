@@ -1,5 +1,6 @@
 import re
 import os
+import time
 import string
 import datetime
 import pymysql
@@ -106,15 +107,29 @@ class SentimentController:
                 tweets.append(text)
         return tweets
 
-    def requestListener(self):
-        pass
-        # API request --> API response
-        # Sentiment request --> Sentiment response
+    def requestListener(self, coin: str):
+
+        connection = self.connectToDatabase()
+
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "SELECT state FROM coins_current WHERE coin == %s"
+                    try:
+                        result = cursor.execute(query, (coin,))
+                        return result
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
 
     # Returns current sentiment of a coin.
-    def analyzeCurrency(self, currency):
+    def analyzeCurrency(self, coin: str):
+
         finalSentiment = 0
-        tweets = self.scraping("#" + currency, 100)
+
+        self.setProcessingState(coin) # Sets the state to "processing"
+        tweets = self.scraping("#" + coin, 100) # Performs the analysis
+        self.setFinishedState(coin) # Sets the state to "finished"
 
         for tweet in tweets:
             try:
@@ -124,13 +139,16 @@ class SentimentController:
                     .split()[-1]
                 )
                 finalSentiment += tweetSentiment
+
             except Exception as e:
                 self.logger.errorLog(self.logTitle, str(e))
-        logMessage = "Analysis of %s complete" % currency
+
+        logMessage = "Analysis of %s complete" % coin
         self.logger.debugLog(self.logTitle, logMessage)
+
         return finalSentiment
 
-    # Assumes that the coin already exists in the database.
+    # Assumes that the coin already exists in the database. Updates the coin value.
     def updateSentimentAnalysis(self, coin: str):
 
         analysis = self.analyzeCurrency(coin)
@@ -139,14 +157,48 @@ class SentimentController:
         if connection:
             with connection:
                 with connection.cursor() as cursor:
-                    query = "UPDATE coins_current SET sentiment = %s WHERE coin == %s"
+                    query = "UPDATE coins_current SET sentiment = %s, timestamp = %s WHERE coin == %s"
                     try:
-                        cursor.execute(query, (coin, analysis))
+                        timestamp = time.time()
+                        cursor.execute(query, (coin, timestamp, analysis))
                         connection.commit()
                     except Exception as e:
                         message = str(e)
                         self.logger.errorLog(message)
 
+    # Changes the current status of coin analysis to "processing"
+    def setProcessingState(self, coin: str):
+
+        connection = self.connectToDatabase()
+
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "UPDATE coins_current SET state = %s WHERE coin == %s"
+                    try:
+                        cursor.execute(query, (coin, "processing"))
+                        connection.commit()
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
+
+    # Changes the current status of coin analysis to "done"
+    def setFinishedState(self, coin: str):
+
+        connection = self.connectToDatabase()
+
+        if connection:
+            with connection:
+                with connection.cursor() as cursor:
+                    query = "UPDATE coins_current SET state = %s WHERE coin == %s"
+                    try:
+                        cursor.execute(query, (coin, "done"))
+                        connection.commit()
+                    except Exception as e:
+                        message = str(e)
+                        self.logger.errorLog(message)
+
+    # Performs an SQL query to retrieve the latest sentiment value from the database.
     def getCoinSentiment(self, coin):
 
         connection = self.connectToDatabase()
