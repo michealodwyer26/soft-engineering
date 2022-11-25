@@ -221,7 +221,7 @@ class SentimentController:
                 with connection.cursor() as cursor:
                     query = "SELECT state FROM coins_current WHERE coin=%s"
                     try:
-                        result = cursor.execute(query, (coin,))
+                        result = cursor.execute(query, (coin,)).fetchone()
                         self.logger.debugLog(self.logTitle, str(result))
                         return str(result)
                     except Exception as e:
