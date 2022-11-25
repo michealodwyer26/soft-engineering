@@ -56,6 +56,7 @@ def createBot():
         else:
             logMessage = 'Bot failed: %s' % botId
             flaskLogger.errorLog(flaskLogTitle, logMessage)
+            flaskLogger.errorLog(flaskLogTitle, response)
             return response
     except Exception as e:
         return str(e)
