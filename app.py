@@ -85,7 +85,6 @@ def updateBot():
 
 @app.route('/api/v1/colony/<colony>/<botId>')
 def getBot(colony: str, botId: int):
-
     botId = str(botId)
     result = mainController.getBot(colony, botId)
 
@@ -106,7 +105,6 @@ def getBot(colony: str, botId: int):
         return "Bot not found"
     else:
         return result
-
 
 
 @app.route('/api/v1/colony/<colony>')
