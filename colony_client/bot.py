@@ -11,6 +11,7 @@ class Bot:
         self.identifier = identifier
         self._coinBalance = 0
         self._balance = 0
+        self._investment_strategy = ""
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
@@ -48,14 +49,19 @@ class Bot:
 
         match sentiment:
             case "Excellent":
+                self._investment_strategy = "Scalp"
                 amount = self._balance / 0.90
             case "Great":
+                self._investment_strategy = "High leverage"
                 amount = self._balance / 0.75
             case "Good":
+                self._investment_strategy = "Medium leverage"
                 amount = self._balance / 0.5
             case "Ok":
+                self._investment_strategy = "Long-term"
                 amount = 0
             case "Bad":
+                self._investment_strategy = "Short"
                 self.sellCoin()
 
         price = self.getCoinPriceEur(1)
@@ -140,3 +146,9 @@ class Bot:
     async def main(self):
         await asyncio.sleep(10)
         self.investInCoin()
+
+        # Bad: Buy coins, sell coins for cash, buy back more coins, sell back coins. 
+        # Ok: Invest, no leverage. Long-term invest
+        # Good: Invest, low leverage. 
+        # Great: Invest, higher leverage. 
+        # Excellent: Scalp. 
