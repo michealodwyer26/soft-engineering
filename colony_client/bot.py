@@ -7,16 +7,16 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 
 class Bot:
-    def __init__(self, identifier, coin):
+    def __init__(self, identifier, strategy):
         self.identifier = identifier
         self._coinBalance = 0
         self._balance = 0
-        self._investment_strategy = ""
+        self._buyInAmount = 0
+        self._strategy = strategy
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
         self.logTitle = "bot"
-        self.coin = coin
         self.engine = None
 
     # A request to the server is made to perform sentiment analysis on self.coin
@@ -71,6 +71,27 @@ class Bot:
             coinAmount = amount // price
             self._coinBalance += coinAmount
             self._balance -= amount + change
+
+    def checkTrade(self):
+        value = self.getCoinPriceEur(self._coinBalance)
+        leverage = self.getLeverage()
+
+        if (value - self.buyInAmount) * leverage < self._buyInAmount / leverage:
+            self.sellAllCoin()
+
+
+
+    def getLeverage(self):
+        match self._strategy:
+            case self._strategy if self._strategy == "Short" or self._investment_strategy == "Long-term":
+                return 1
+            case self._strategy if self._strategy == "Medium":
+                return 2 
+            case self._strategy if self._strategy == "High leverage":
+                return 5 
+            case self._strategy if self._strategy == "High leverage":
+                return 10
+
 
     def investingState(self):
         sentiment = self.getCoinSentiment()
@@ -145,7 +166,11 @@ class Bot:
 
     async def main(self):
         await asyncio.sleep(10)
-        self.investInCoin()
+
+        if self._balance > 0:
+            self.investInCoin()
+        else:
+            self.checkTrade()
 
         # 1. Long-term ("Ok sentiment")
         # Balance < 100
@@ -156,16 +181,15 @@ class Bot:
 
         # 2. Medium leverage ("Good" sentiment)
         # Balance < 500
-        # Invest 80% with 20% as collateral, 2x leverage
-        # Sell at 10% return 
+        # 2x leverage
 
         # self.setBalance(500)
         #
 
         # 3. Higher leverage ("Great")
         # Balance < 1000
-        # Invest 90% with 10% collateral, 5x leverage
+        # 5x leverage
 
         # 4. Scalp ("Excellent")
         # Balance < 2000
-        # Invest 95% with 5% collateral, 10x leverage
+        # 10x leverage
