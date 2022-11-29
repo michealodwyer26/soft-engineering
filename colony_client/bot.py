@@ -11,14 +11,21 @@ class Bot:
         self.identifier = identifier
         self._coinBalance = 0
         self._balance = 0
+<<<<<<< HEAD
         self._buyInAmount = 0
+=======
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
         self._strategy = strategy
+
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
         self.logTitle = "bot"
+<<<<<<< HEAD
+=======
+        self.coin = ""
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
         self.engine = None
-        self._initialBalance = self._balance
 
     # A request to the server is made to perform sentiment analysis on self.coin
     def updateCoinRequest(self):
@@ -62,16 +69,25 @@ class Bot:
 
         price = self.getCoinPriceEur(1)
 
-
+<<<<<<< HEAD
+        if amount / price > 1:
+            change = (amount / price) - (amount // price)
+            coinAmount = amount // price
+            self._coinBalance += coinAmount
+            self._balance -= amount + change
 
     def checkTrade(self):
-        value = self.getCoinPriceEur(self._coinBalance)
+        current_price = self.getCoinPriceEur(1)
         leverage = self.getLeverage()
 
-        if (value - self.buyInAmount) * leverage < self._buyInAmount / leverage:
-            self.sellAllCoin()
+        valueOfTrade = current_price * self._coinBalance
+        initialValueOfTrade = self._initialPrice * self._coinBalance
 
+        investedAmount = initialValueOfTrade / leverage 
+        change = valueOfTrade - initialValueOfTrade
 
+        if change <= -investedAmount:
+            self.sellCoin()
 
     def getLeverage(self):
         match self._strategy:
@@ -85,6 +101,8 @@ class Bot:
                 return 10
 
 
+=======
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
     def investingState(self):
         sentiment = self.getCoinSentiment()
 
@@ -140,7 +158,6 @@ class Bot:
         return self._coinBalance
 
     def feedback(self):
-        earnings = self._balance - self._initialBalance
         dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(
             self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
 
