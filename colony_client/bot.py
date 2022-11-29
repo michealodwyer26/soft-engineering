@@ -11,13 +11,21 @@ class Bot:
         self.identifier = identifier
         self._coinBalance = 0
         self._balance = 0
+<<<<<<< HEAD
         self._buyInAmount = 0
+=======
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
         self._strategy = strategy
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
         self.logTitle = "bot"
+<<<<<<< HEAD
+=======
+        self.coin = ""
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
         self.engine = None
+        self._initialBalance = self._balance
 
     # A request to the server is made to perform sentiment analysis on self.coin
     def updateCoinRequest(self):
@@ -49,23 +57,19 @@ class Bot:
 
         match sentiment:
             case "Excellent":
-                self._investment_strategy = "Scalp"
-                amount = self._balance / 0.90
+                self._strategy = "Scalp"
             case "Great":
-                self._investment_strategy = "High leverage"
-                amount = self._balance / 0.75
+                self._strategy = "High leverage"
             case "Good":
-                self._investment_strategy = "Medium leverage"
-                amount = self._balance / 0.5
+                self._strategy = "Medium leverage"
             case "Ok":
-                self._investment_strategy = "Long-term"
-                amount = 0
+                self._strategy = "Long-term"
             case "Bad":
-                self._investment_strategy = "Short"
-                self.sellCoin()
+                self._strategy = "Short"
 
         price = self.getCoinPriceEur(1)
 
+<<<<<<< HEAD
         if amount / price > 1:
             change = (amount / price) - (amount // price)
             coinAmount = amount // price
@@ -93,6 +97,8 @@ class Bot:
                 return 10
 
 
+=======
+>>>>>>> af53a8fcf4a23e111a0a198e4624c2856f4b219c
     def investingState(self):
         sentiment = self.getCoinSentiment()
 
@@ -108,7 +114,7 @@ class Bot:
             case sentiment if sentiment > 20:
                 return "Excellent"
 
-    def sellAllCoin(self):
+    def sellCoin(self):
         if self._coinBalance != 0:
             self._balance += self.getCoinPriceEur(self._coinBalance)
             self._coinBalance = 0
@@ -147,18 +153,12 @@ class Bot:
     def getCoinBalance(self):
         return self._coinBalance
 
-    def listenForGodMode(self):
-        pass
-
     def feedback(self):
         earnings = self._balance - self._initialBalance
         dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(
             self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
 
         return dataJSON
-
-    def die(self):
-        pass
 
     async def run(self):
         while True:
