@@ -147,8 +147,25 @@ class Bot:
         await asyncio.sleep(10)
         self.investInCoin()
 
-        # Bad: Buy coins, sell coins for cash, buy back more coins, sell back coins. 
-        # Ok: Invest, no leverage. Long-term invest
-        # Good: Invest, low leverage. 
-        # Great: Invest, higher leverage. 
-        # Excellent: Scalp. 
+        # 1. Long-term ("Ok sentiment")
+        # Balance < 100
+        # Invest with no leverage
+
+        # self.setBalance(100)
+        # self.investInCoin()
+
+        # 2. Medium leverage ("Good" sentiment)
+        # Balance < 500
+        # Invest 80% with 20% as collateral, 2x leverage
+        # Sell at 10% return 
+
+        # self.setBalance(500)
+        #
+
+        # 3. Higher leverage ("Great")
+        # Balance < 1000
+        # Invest 90% with 10% collateral, 5x leverage
+
+        # 4. Scalp ("Excellent")
+        # Balance < 2000
+        # Invest 95% with 5% collateral, 10x leverage
