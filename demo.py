@@ -37,21 +37,4 @@ def runTkWindow():
     root.mainloop()
 
 
-def runPygameWindow():
-    testCoreController = CoreController("demo")
-    vis = Visualiser(testCoreController)
-    testCoreController.createBot("demoCoin1")
-    testCoreController.createBot("demoCoin2")
 
-    response = requests.get("http://65.108.214.180/api/v1/colony/demo")
-    json = response.json()
-    print(json)
-
-    for i in json['bots']:
-        vis.addBot()
-
-    vis.run()
-
-
-Thread(target=runTkWindow).start()
-Thread(target=runPygameWindow).start()

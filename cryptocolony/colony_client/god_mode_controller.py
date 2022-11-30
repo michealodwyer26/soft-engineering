@@ -1,5 +1,5 @@
 from .bot import Bot
-from .visualiser import Visualiser
+from .visualiser import VisualiserWindow
 from .core_controller import CoreController
 
 class GodModeController:

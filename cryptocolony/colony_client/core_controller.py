@@ -10,12 +10,12 @@ class CoreController:
         self.currentBotId = 0
         self.logTitle = "core"
         self.logger = Logger()
-        self.notifySentimentController()
+        self.syncColony()
 
     def listenForGodMode(self):
         pass
 
-    def notifySentimentController(self):
+    def syncColony(self):
         dataJSON = '{"name":"%s"}' % self.identifier
         try:
             requests.post(
