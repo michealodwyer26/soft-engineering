@@ -1,2 +1,0 @@
-import colony_client.core_controller
-import colony_client.bot

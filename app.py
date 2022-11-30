@@ -1,6 +1,6 @@
-from custom_logger import Logger
+from cryptocolony.custom_logger import Logger
 from flask import Flask, request
-from sentiment_controller import SentimentController
+from cryptocolony.sentiment_controller import SentimentController
 
 app = Flask(__name__)
 mainController = SentimentController()

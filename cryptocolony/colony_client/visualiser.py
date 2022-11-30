@@ -20,7 +20,6 @@ class VisualBot:
         pygame.draw.rect(self.renderer, self.color, Rect((self.xpos, self.ypos), self.size))
 
 
-
 class VisualCoreController:
     def __init__(self, screen):
         self.renderer = screen
@@ -43,24 +42,35 @@ class Visualiser:
 
     def renderText(self, message: str, posX, posY):
         text = self.font.render(message, True, (255, 255, 255))
-        self.screen.blit(text, (posX, posY))
-        print("Tried rendering text: " + message)
+        try:
+            self.screen.blit(text, (posX, posY))
+            print("S: Tried rendering text: " + message)
+        except Exception as e:
+            print(e)
+            print("F: Tried rendering text: " + message)
 
     def updateBotData(self, colonyName: str):
         url = "http://65.108.214.180/api/v1/colony/%s" % colonyName
-        response = requests.get(url)
-        json = response.json()
-        print(json)
+        try:
+            response = requests.get(url)
+        except Exception as e:
+            print(e)
 
-        while len(json["bots"]) > len(self.bots):
+        json = response.json()
+
+        if len(json["bots"]) > len(self.bots):
+            print("JSON Bots:", len(json["bots"]))
+            print("Local Bots:", len(self.bots))
             self.bots.append(self.addBot())
             print("Added a VisualBot")
 
         for bot in self.bots:
-            if bot.xpos:
-                textToRender = str(json["bots"][self.bots.index(bot)])
-                self.renderText(textToRender, bot.xpos + 30, bot.ypos)
-                pygame.display.update()
+            if bot:
+                try:
+                    textToRender = str(json["bots"])
+                    self.renderText(textToRender, bot.xpos + 30, bot.ypos)
+                except Exception as e:
+                    print(e)
 
     def addBot(self):
         self.bots.append(VisualBot(self.screen, self.currentIndex))
@@ -71,31 +81,41 @@ class Visualiser:
         pygame.init()
         elapsedTime = 0
         clock = pygame.time.Clock()
+        vCore = VisualCoreController(self.screen)
         firstIteration = False
 
         while True:
+
             currentTime = clock.tick()
             elapsedTime += currentTime
 
             for event in pygame.event.get():
                 if event.type == QUIT:
                     exit()
-            self.screen.lock()
 
-            vCore = VisualCoreController(self.screen)
-            vCore.draw()
-
-            for bot in self.bots:
-                bot.draw()
-
-            self.screen.unlock()
-            pygame.display.update()
+            if firstIteration:
+                vCore.draw()
+                for bot in self.bots:
+                    bot.draw()
+                pygame.display.update()
 
             if not firstIteration:
                 self.updateBotData(self.coreController.identifier)
                 self.renderText(self.coreController.identifier, vCore.xpos - 20, vCore.ypos + 40)
+
+                vCore.draw()
+                for bot in self.bots:
+                    bot.draw()
+
                 firstIteration = True
+                pygame.display.update()
 
             if elapsedTime > 5000:
                 self.updateBotData(self.coreController.identifier)
+                self.renderText(self.coreController.identifier, vCore.xpos - 20, vCore.ypos + 40)
+                self.bots = list(filter(lambda iterBot: iterBot is not None, self.bots))
+                vCore.draw()
+                for bot in self.bots:
+                    bot.draw()
+                pygame.display.update()
                 elapsedTime = 0

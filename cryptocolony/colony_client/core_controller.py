@@ -1,6 +1,6 @@
 import requests
-from colony_client.bot import Bot
-from custom_logger import Logger
+from bot import Bot
+from cryptocolony.custom_logger import Logger
 
 
 class CoreController:

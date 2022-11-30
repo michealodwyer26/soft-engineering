@@ -1,4 +1,4 @@
-from colony_client.core_controller import CoreController
+from cryptocolony.colony_client.core_controller import CoreController
 
 
 def test_create_core_controller() -> None:

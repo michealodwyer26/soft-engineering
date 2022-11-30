@@ -1,8 +1,8 @@
 import json
 import asyncio
 import requests
-from custom_logger import Logger
-from requests import Request, Session
+from cryptocolony.custom_logger import Logger
+from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 

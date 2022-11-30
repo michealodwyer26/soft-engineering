@@ -2,14 +2,11 @@ import re
 import os
 import time
 import string
-import datetime
 import pymysql
-from datetime import datetime
 import snscrape.modules.twitter as sntwitter
 
-from custom_logger import Logger
+from cryptocolony.custom_logger import Logger
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from colony_client import bot, core_controller, god_mode_controller, visualiser
 
 
 class SentimentController:
