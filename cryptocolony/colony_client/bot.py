@@ -7,84 +7,46 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 
 
 class Bot:
-    def __init__(self, identifier, coin):
+    def __init__(self, identifier, strategy):
         self.identifier = identifier
         self._coinBalance = 0
         self._balance = 0
+        self._buyInAmount = 0
+        self._strategy = strategy
+
         self.xpos = 0
         self.ypos = 0
         self.logger = Logger()
         self.logTitle = "bot"
-        self.coin = coin
         self.engine = None
 
-    # A request to the server is made to perform sentiment analysis on self.coin
-    def updateCoinRequest(self):
-        dataJSON = '{"name":"%s"}' % self.coin
+    def getCoinList(self):
+        url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+        parameters = {
+            'symbol': '{}'.format(self.coin),
+            'sort': 'rank', 
+		'limit': '100'
+        }
+        headers = {
+            'Accepts': 'application/json',
+            'X-CMC_PRO_API_KEY': '76bff3ac-5544-4a06-9814-8326c089a8ac',
+        }
+
+        session = Session()
+        session.headers.update(headers)
+
+        coinList = []
+
         try:
-            requests.post(
-                "http://65.108.214.180/api/v1/coin/sentiment",
-                data=dataJSON,
-                headers={"Content-Type": "application/json"}
-            )
-        except Exception as e:
-            message = str(e)
-            self.logger.errorLog("bot", message)
+            response = session.get(url, params=parameters)
+            data = json.loads(response.text)
+            for coin in data["data"]:
+                coinName = coin["symbol"]
+                coinList += coinName
+        except (ConnectionError, Timeout, TooManyRedirects) as e:
+            print(e)
 
-    def getCoinSentiment(self):
-        self.updateCoinRequest(self.coin)
-
-        dataJSON = '{"name":"%s"}' % self.coin
-
-        coinSentiment = requests.post(
-            "http://65.108.214.180/api/v1/coin/update",
-            data=dataJSON,
-            headers={"Content-Type": "application/json"}
-        )
-        return coinSentiment["coinSentiment"]
-
-    def investInCoin(self):
-        sentiment = self.investingState()
-
-        match sentiment:
-            case "Excellent":
-                amount = self._balance / 0.90
-            case "Great":
-                amount = self._balance / 0.75
-            case "Good":
-                amount = self._balance / 0.5
-            case "Ok":
-                amount = 0
-            case "Bad":
-                self.sellCoin()
-
-        price = self.getCoinPriceEur(1)
-
-        if amount / price > 1:
-            change = (amount / price) - (amount // price)
-            coinAmount = amount // price
-            self._coinBalance += coinAmount
-            self._balance -= amount + change
-
-    def investingState(self):
-        sentiment = self.getCoinSentiment()
-
-        match sentiment:
-            case sentiment if sentiment < 0:
-                return "Bad"
-            case sentiment if sentiment > 0:
-                return "Ok"
-            case sentiment if sentiment > 5:
-                return "Good"
-            case sentiment if sentiment > 10:
-                return "Great"
-            case sentiment if sentiment > 20:
-                return "Excellent"
-
-    def sellAllCoin(self):
-        if self._coinBalance != 0:
-            self._balance += self.getCoinPriceEur(self._coinBalance)
-            self._coinBalance = 0
+        return data["data"][0]["quote"]["EUR"]["price"]
 
     def getCoinPriceEur(self, amount):
         url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
@@ -104,11 +66,86 @@ class Bot:
         try:
             response = session.get(url, params=parameters)
             data = json.loads(response.text)
-            print("Worth of balance in EUR: {}".format(data["data"][0]["quote"]["EUR"]["price"]))
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
 
         return data["data"][0]["quote"]["EUR"]["price"]
+
+
+    # A request to the server is made to perform sentiment analysis on self.coin
+    def updateCoinRequest(self):
+        dataJSON = '{"name":"%s"}' % self.coin
+        try:
+            requests.post(
+                "http://65.108.214.180/api/v1/coin/sentiment",
+                data=dataJSON,
+                headers={"Content-Type": "application/json"}
+            )
+        except Exception as e:
+            message = str(e)
+            self.logger.errorLog("bot", message)
+
+    def getCoinSentiment(self, coin):
+        self.updateCoinRequest(coin)
+
+        dataJSON = '{"name":"%s"}' % coin
+
+        coinSentiment = requests.post(
+            "http://65.108.214.180/api/v1/coin/update",
+            data=dataJSON,
+            headers={"Content-Type": "application/json"}
+        )
+        return coinSentiment["coinSentiment"]
+
+    def investInCoin(self):
+
+        coinList = self.getCoinList()
+
+        for coin in coinList:    
+            sentiment = self.getCoinSentiment(coin)
+
+            if sentiment < 0 and self.getLeverage() == 1:
+                self.buyCoin(coin)
+            if sentiment > 0 and self.getLeverage() == 1:
+                self.buyCoin(coin)
+            if sentiment > 5 and self.getLeverage() == 2:
+                self.buyCoin(coin)
+            if sentiment > 10 and self.getLeverage() == 5:
+                self.buyCoin(coin)
+            if sentiment > 15 and self.getLeverage() == 10:
+                self.buyCoin(coin)
+
+    def buyCoin(self):
+        pass
+
+    def checkTrade(self):
+        current_price = self.getCoinPriceEur(1)
+        leverage = self.getLeverage()
+
+        valueOfTrade = current_price * self._coinBalance
+        initialValueOfTrade = self._initialPrice * self._coinBalance
+
+        investedAmount = initialValueOfTrade / leverage 
+        change = valueOfTrade - initialValueOfTrade
+
+        if change <= -investedAmount:
+            self.sellCoin()
+
+    def getLeverage(self):
+        match self._strategy:
+            case self._strategy if self._strategy == "Short" or self._strategy == "Long-term":
+                return 1
+            case self._strategy if self._strategy == "Medium":
+                return 2 
+            case self._strategy if self._strategy == "High leverage":
+                return 5 
+            case self._strategy if self._strategy == "Scalp":
+                return 10
+
+    def sellCoin(self):
+        if self._coinBalance != 0:
+            self._balance += self.getCoinPriceEur(self._coinBalance)
+            self._coinBalance = 0
 
     def getBalance(self):
         return self._balance
@@ -120,18 +157,12 @@ class Bot:
     def getCoinBalance(self):
         return self._coinBalance
 
-    def listenForGodMode(self):
-        pass
-
     def feedback(self):
-        earnings = self._balance - self._initialBalance
+        earnings = ""
         dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(
             self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
 
         return dataJSON
-
-    def die(self):
-        pass
 
     async def run(self):
         while True:
@@ -139,4 +170,30 @@ class Bot:
 
     async def main(self):
         await asyncio.sleep(10)
-        self.investInCoin()
+
+        if self._balance > 0:
+            self.investInCoin()
+        else:
+            self.checkTrade()
+
+        # 1. Long-term ("Ok sentiment")
+        # Balance < 100
+        # Invest with no leverage
+
+        # self.setBalance(100)
+        # self.investInCoin()
+
+        # 2. Medium leverage ("Good" sentiment)
+        # Balance < 500
+        # 2x leverage
+
+        # self.setBalance(500)
+        #
+
+        # 3. Higher leverage ("Great")
+        # Balance < 1000
+        # 5x leverage
+
+        # 4. Scalp ("Excellent")
+        # Balance < 2000
+        # 10x leverage
