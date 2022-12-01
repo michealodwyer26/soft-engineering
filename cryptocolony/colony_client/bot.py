@@ -9,10 +9,14 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 class Bot:
     def __init__(self, identifier, strategy):
         self.identifier = identifier
+
         self._coinBalance = 0
         self._balance = 0
+        self.coin = ""
+
         self._buyInAmount = 0
         self._strategy = strategy
+        self._initialPrice = 0
 
         self.xpos = 0
         self.ypos = 0
@@ -23,7 +27,6 @@ class Bot:
     def getCoinList(self):
         url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
         parameters = {
-            'symbol': '{}'.format(self.coin),
             'sort': 'rank',
             'limit': '100'
         }
@@ -114,8 +117,10 @@ class Bot:
             if sentiment > 15 and self.getLeverage() == 10:
                 self.buyCoin(coin)
 
-    def buyCoin(self):
-        pass
+    def buyCoin(self, coin):
+        self.coin = coin
+        self._initialPrice = self.getCoinPriceEur(1)
+        self.getLeverage()
 
     def checkTrade(self):
         current_price = self.getCoinPriceEur(1)
@@ -130,21 +135,22 @@ class Bot:
         if change <= -investedAmount:
             self.sellCoin()
 
-    def getLeverage(self):
-        match self._strategy:
-            case self._strategy if self._strategy == "Short" or self._strategy == "Long-term":
-                return 1
-            case self._strategy if self._strategy == "Medium":
-                return 2
-            case self._strategy if self._strategy == "High leverage":
-                return 5
-            case self._strategy if self._strategy == "Scalp":
-                return 10
-
     def sellCoin(self):
         if self._coinBalance != 0:
             self._balance += self.getCoinPriceEur(self._coinBalance)
             self._coinBalance = 0
+
+    async def run(self):
+        while True:
+            await asyncio.gather(self.main())
+
+    async def main(self):
+        await asyncio.sleep(10)
+
+        if self._balance > 0:
+            self.investInCoin()
+        else:
+            self.checkTrade()
 
     def getBalance(self):
         return self._balance
@@ -158,23 +164,23 @@ class Bot:
 
     def feedback(self):
         earnings = ""
-        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', " \
+        dataJSON = "{'id': '{}', 'strategy': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', " \
                    "'y': '{}'}".format(
-            self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
+            self.identifier, self._strategy, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
 
         return dataJSON
 
-    async def run(self):
-        while True:
-            await asyncio.gather(self.main())
+    def getLeverage(self):
+        match self._strategy:
+            case self._strategy if self._strategy == "Short" or self._strategy == "Long-term":
+                return 1
+            case self._strategy if self._strategy == "Medium":
+                return 2
+            case self._strategy if self._strategy == "High leverage":
+                return 5
+            case self._strategy if self._strategy == "Scalp":
+                return 10
 
-    async def main(self):
-        await asyncio.sleep(10)
-
-        if self._balance > 0:
-            self.investInCoin()
-        else:
-            self.checkTrade()
 
         # 1. Long-term ("Ok sentiment")
         # Balance < 100
