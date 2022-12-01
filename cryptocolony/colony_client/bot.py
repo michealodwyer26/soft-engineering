@@ -24,8 +24,8 @@ class Bot:
         url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
         parameters = {
             'symbol': '{}'.format(self.coin),
-            'sort': 'rank', 
-		'limit': '100'
+            'sort': 'rank',
+            'limit': '100'
         }
         headers = {
             'Accepts': 'application/json',
@@ -71,7 +71,6 @@ class Bot:
 
         return data["data"][0]["quote"]["EUR"]["price"]
 
-
     # A request to the server is made to perform sentiment analysis on self.coin
     def updateCoinRequest(self):
         dataJSON = '{"name":"%s"}' % self.coin
@@ -101,7 +100,7 @@ class Bot:
 
         coinList = self.getCoinList()
 
-        for coin in coinList:    
+        for coin in coinList:
             sentiment = self.getCoinSentiment(coin)
 
             if sentiment < 0 and self.getLeverage() == 1:
@@ -125,7 +124,7 @@ class Bot:
         valueOfTrade = current_price * self._coinBalance
         initialValueOfTrade = self._initialPrice * self._coinBalance
 
-        investedAmount = initialValueOfTrade / leverage 
+        investedAmount = initialValueOfTrade / leverage
         change = valueOfTrade - initialValueOfTrade
 
         if change <= -investedAmount:
@@ -136,9 +135,9 @@ class Bot:
             case self._strategy if self._strategy == "Short" or self._strategy == "Long-term":
                 return 1
             case self._strategy if self._strategy == "Medium":
-                return 2 
+                return 2
             case self._strategy if self._strategy == "High leverage":
-                return 5 
+                return 5
             case self._strategy if self._strategy == "Scalp":
                 return 10
 
@@ -159,7 +158,8 @@ class Bot:
 
     def feedback(self):
         earnings = ""
-        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', 'y': '{}'}".format(
+        dataJSON = "{'id': '{}', 'coin': '{}', 'balance': '{}', 'coin_balance': '{}', 'earnings': '{}', 'x': '{}', " \
+                   "'y': '{}'}".format(
             self.identifier, self.coin, self._balance, self._coinBalance, earnings, self.xpos, self.ypos)
 
         return dataJSON

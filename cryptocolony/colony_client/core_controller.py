@@ -24,7 +24,8 @@ class CoreController:
                 headers={"Content-Type": "application/json"}
             )
         except Exception as e:
-            print(e)
+            self.logger.errorLog(self.logTitle, str(e))
+            print("The API is down.")
 
     def createBot(self, botCoin: str):
         self.currentBotId += 1  # Increases the botId
@@ -42,7 +43,8 @@ class CoreController:
                 headers={"Content-Type": "application/json"}
             )
         except Exception as e:
-            print(e)
+            self.logger.errorLog(self.logTitle, str(e))
+            print("The API is down.")
         return
 
     def deleteBot(self, bot: Bot):
