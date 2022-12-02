@@ -81,8 +81,15 @@ class Bot:
 
         if change <= -investedAmount:
             self.sellCoin() # Bot has lost all money
-        elif change >= initialValueOfTrade / 10:
-            self.sellCoin() # Take 10% profit
+        elif change >= initialValueOfTrade * 0.10:
+            self.sellCoin() # Take 10% profit for long-term trade 
+        elif change >= initialValueOfTrade * 0.05 and self._strategy == "Medium":
+            self.sellCoin() # Take 5% profit for medium risk trade 
+        elif change >= initialValueOfTrade * 0.02 and self._strategy == "High":
+            self.sellCoin() # Take 2% profit for medium risk trade 
+        elif change >= initialValueOfTrade * 0.01 and self._strategy == "Scalp":
+            self.sellCoin() # Take 1% profit for scalp
+
 
     def getLeverage(self):
         match self._strategy:
@@ -92,7 +99,7 @@ class Bot:
                 return 2 
             case self._strategy if self._strategy == "High leverage":
                 return 5 
-            case self._strategy if self._strategy == "High leverage":
+            case self._strategy if self._strategy == "Scalp":
                 return 10
 
 
