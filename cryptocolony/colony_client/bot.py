@@ -100,27 +100,28 @@ class Bot:
         return coinSentiment["coinSentiment"]
 
     def investInCoin(self):
+        sentiment = self.investingState()
 
-        coinList = self.getCoinList()
+        match sentiment:
+            case "Excellent":
+                self._strategy = "Scalp"
+            case "Great":
+                self._strategy = "High leverage"
+            case "Good":
+                self._strategy = "Medium leverage"
+            case "Ok":
+                self._strategy = "Long-term"
+            case "Bad":
+                self._strategy = "Short"
 
-        for coin in coinList:
-            sentiment = self.getCoinSentiment(coin)
+        price = self.getCoinPriceEur(1)
+        leverage = self.getLeverage()
 
-            if sentiment < 0 and self.getLeverage() == 1:
-                self.buyCoin(coin)
-            if sentiment > 0 and self.getLeverage() == 1:
-                self.buyCoin(coin)
-            if sentiment > 5 and self.getLeverage() == 2:
-                self.buyCoin(coin)
-            if sentiment > 10 and self.getLeverage() == 5:
-                self.buyCoin(coin)
-            if sentiment > 15 and self.getLeverage() == 10:
-                self.buyCoin(coin)
-
-    def buyCoin(self, coin):
-        self.coin = coin
-        self._initialPrice = self.getCoinPriceEur(1)
-        self.getLeverage()
+        if self._balance / price > 1:
+            change = (self._balance / price) - (self._balance // price)
+            coinAmount = self._balance // price
+            self._coinBalance += coinAmount * leverage
+            self._balance -= self._balance + change
 
     def checkTrade(self):
         current_price = self.getCoinPriceEur(1)
@@ -129,11 +130,19 @@ class Bot:
         valueOfTrade = current_price * self._coinBalance
         initialValueOfTrade = self._initialPrice * self._coinBalance
 
-        investedAmount = initialValueOfTrade / leverage
+        investedAmount = initialValueOfTrade / leverage 
         change = valueOfTrade - initialValueOfTrade
 
         if change <= -investedAmount:
-            self.sellCoin()
+            self.sellCoin() # Bot has lost all money
+        elif change >= initialValueOfTrade * 0.10:
+            self.sellCoin() # Take 10% profit for long-term trade 
+        elif change >= initialValueOfTrade * 0.05 and self._strategy == "Medium":
+            self.sellCoin() # Take 5% profit for medium risk trade 
+        elif change >= initialValueOfTrade * 0.02 and self._strategy == "High":
+            self.sellCoin() # Take 2% profit for medium risk trade 
+        elif change >= initialValueOfTrade * 0.01 and self._strategy == "Scalp":
+            self.sellCoin() # Take 1% profit for scalp
 
     def sellCoin(self):
         if self._coinBalance != 0:
@@ -141,6 +150,21 @@ class Bot:
             self._coinBalance = 0
 
     async def run(self):
+        coinList = self.getCoinList()
+
+        for coin in coinList:
+            sentiment = self.getCoinSentiment(coin)
+
+            if sentiment < 0 and self.getLeverage() == 1:
+                self.coin = coin
+            if sentiment > 0 and self.getLeverage() == 1:
+                self.coin = coin
+            if sentiment > 5 and self.getLeverage() == 2:
+                self.coin = coin
+            if sentiment > 10 and self.getLeverage() == 5:
+                self.coin = coin
+            if sentiment > 15 and self.getLeverage() == 10:
+                self.coin = coin
         while True:
             await asyncio.gather(self.main())
 
@@ -181,25 +205,17 @@ class Bot:
             case self._strategy if self._strategy == "Scalp":
                 return 10
 
+    def investingState(self):
+        sentiment = self.getCoinSentiment()
 
-        # 1. Long-term ("Ok sentiment")
-        # Balance < 100
-        # Invest with no leverage
-
-        # self.setBalance(100)
-        # self.investInCoin()
-
-        # 2. Medium leverage ("Good" sentiment)
-        # Balance < 500
-        # 2x leverage
-
-        # self.setBalance(500)
-        #
-
-        # 3. Higher leverage ("Great")
-        # Balance < 1000
-        # 5x leverage
-
-        # 4. Scalp ("Excellent")
-        # Balance < 2000
-        # 10x leverage
+        match sentiment:
+            case sentiment if sentiment < 0:
+                return "Bad"
+            case sentiment if sentiment > 0:
+                return "Ok"
+            case sentiment if sentiment > 5:
+                return "Good"
+            case sentiment if sentiment > 10:
+                return "Great"
+            case sentiment if sentiment > 20:
+                return "Excellent"
