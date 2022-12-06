@@ -4,7 +4,7 @@ from tkinter import *
 from threading import Thread
 
 from cryptocolony.colony_client.core_controller import CoreController
-from colony_client.visualiser import Visualiser
+from cryptocolony.colony_client.visualiser import Visualiser
 
 def runTkWindow():
     root = Tk()
